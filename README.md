@@ -39,7 +39,7 @@
     ```sh
     pnpm install
     ```
-3.  Copy `.env.example` to `.env.development` and update it with your environment variables.
+3.  Copy `.env.example` to `.env.development`. The default environment variables should be sufficient for development.
 4.  Run the app:
     ```sh
     pnpm tauri dev
@@ -47,14 +47,16 @@
 
 ### Building
 
-To build the application, run:
+To build the application, you'll first need to create a `.env.production` file. You can copy `.env.example` for this.
+
+Then, run:
 ```sh
 pnpm tauri build
 ```
 
 ## 🙏 Credits
 
-This application utilizes a third-party API from [api.banghasan.com](https://api.banghasan.com/) to fetch prayer schedules. Many thanks to the providers of this data.
+This application utilizes a third-party API from [myquran.com](https://myquran.com) to fetch prayer schedules. Many thanks to the providers of this data.
 
 ## 📄 License
 
