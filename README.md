@@ -54,7 +54,7 @@ pnpm tauri build
 
 ## 🙏 Credits
 
-This application utilizes a third-party API to fetch prayer schedules. Many thanks to the providers of this data.
+This application utilizes a third-party API from [api.banghasan.com](https://api.banghasan.com/) to fetch prayer schedules. Many thanks to the providers of this data.
 
 ## 📄 License
 
