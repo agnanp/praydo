@@ -39,7 +39,7 @@
     ```sh
     pnpm install
     ```
-3.  Create a `.env.development` file for environment variables.
+3.  Copy `.env.example` to `.env.development` and update it with your environment variables.
 4.  Run the app:
     ```sh
     pnpm tauri dev
