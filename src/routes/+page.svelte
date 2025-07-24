@@ -265,29 +265,8 @@
   });
 </script>
 
-<main class="p-4">
+<main class="p-4 h-full">
   <Toaster {toaster}></Toaster>
-  <!-- <div
-    onmouseenter={() => (isHovered = true)}
-    onmouseleave={() => (isHovered = false)}
-    class="h-20"
-    role="region"
-    aria-label="Location Combobox"
-  >
-    {#if isHovered}
-      <Combobox
-        data={location}
-        value={selectedLocationId.state.id}
-        onValueChange={(e) => (fetchSchedule(e.value))}
-        label="Pilih Lokasi"
-        placeholder="Pilih..."
-        inputBehavior="autohighlight"
-       >
-      </Combobox>
-    {:else}
-    <div class="w-full h-full"> </div>
-    {/if}
-  </div> -->
   {#if schedule}
     <div class="flex items-baseline justify-center gap-2">
       <MapPin size=13/>
