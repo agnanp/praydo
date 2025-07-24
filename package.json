@@ -1,7 +1,7 @@
 {
   "name": "praydo",
   "version": "0.1.0",
-  "description": "",
+  "description": "Pray on Time. Praydo.",
   "type": "module",
   "scripts": {
     "dev": "vite dev",

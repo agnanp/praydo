@@ -1,7 +1,7 @@
-# Adzan
+# Praydo
 
 <p align="center">
-  <img src="static/favicon.png" alt="Adzan app icon" width="128">
+  <img src="static/favicon.png" alt="Praydo app icon" width="128">
 </p>
 
 <p align="center">
