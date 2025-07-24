@@ -28,9 +28,7 @@
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) & [pnpm](https://pnpm.io/installation)
-- [Rust](https://www.rust-lang.org/tools/install)
-- [Tauri development prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites)
+- [Tauri development prerequisites](https://tauri.app/start/prerequisites/)
 
 ### Development
 
