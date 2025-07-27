@@ -7,6 +7,7 @@
   import { locationList } from '$lib/api/sholat/LocationApi';
   import { onMount } from 'svelte';
   import { selectedTimes } from '$lib/store/selectedTimes';
+  import { selectedAlert } from '$lib/store/selectedAlert';
 
   const options = [
     { value: 5, label: '5 Minutes' },
@@ -20,8 +21,6 @@
   let location = $state<ComboboxData[]>([{label: "", value: ""}]); 
 
   let group = $state('location');
-  const lorem =
-    'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum veniam reprehenderit eum, reiciendis obcaecati, excepturi nemo ipsa fugit suscipit autem vitae numquam et cumque praesentium vero eos minus itaque. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum veniam reprehenderit eum, reiciendis obcaecati, excepturi nemo.';
 
   const toaster = createToaster({
     placement: 'top-end',
@@ -59,6 +58,7 @@
     await selectedTimes.start();
     await timeRemaining.start();
     await selectedLocationLabel.start();
+    await selectedAlert.start();
   });
 </script>
 
@@ -140,7 +140,31 @@
             </label>
           </form>
         </Tabs.Panel>
-        <Tabs.Panel value="sound">Sound - {lorem}</Tabs.Panel>
+        <Tabs.Panel value="sound">
+          <h6 class="h6">Play Adzan At:</h6>
+          <form class="space-y-2">
+            <label class="flex items-center space-x-2">
+              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.subuh} />
+              <p>Subuh</p>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.dzuhur} />
+              <p>Dzuhur</p>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.ashar} />
+              <p>Ashar</p>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.maghrib} />
+              <p>Maghrib</p>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.isya} />
+              <p>Isya</p> 
+            </label>
+          </form>
+        </Tabs.Panel>
         <Tabs.Panel value="alert">
           <label for="time-remaining" class="block text-sm font-medium text-gray-700 mb-1">Display Notification Before Prayer Times:</label>
             <select id="time-remaining" bind:value={timeRemaining.state.minutes} class="mt-1 block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">

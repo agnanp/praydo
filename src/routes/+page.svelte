@@ -13,9 +13,10 @@
   import { dailySchedule } from "$lib/api/sholat/ScheduleApi";
   import { timeRemaining } from "$lib/store/timeRemaining";
   import { selectedTimes } from "$lib/store/selectedTimes";
+  import { playSound } from "$lib/sound";
+  import { selectedAlert } from "$lib/store/selectedAlert";
 
   let location = $state<ComboboxData[]>([{label: "", value: ""}]);
-  let isHovered = $state(false);
 
   let schedule = $state<ScheduleResponse | undefined>();
   let nextPrayerName = $state('');
@@ -82,7 +83,7 @@
             body: `${prayerName} ${toTitleCase(location)} ${prayerTime}.`,
           });
           }
-
+    playSound('solemn.mp3');
   }
 
   async function sendPrayerNotification(prayerName: string, prayerTime: string, location: string) {
@@ -96,6 +97,16 @@
             title: `Waktu ${prayerName} ${prayerTime}`,
             body: `Waktu ${prayerName} ${toTitleCase(location)}.`,
           });
+    }
+    const prayer = prayerName.toLowerCase();
+    if (selectedAlert.state.alert[prayer as keyof typeof selectedAlert.state.alert]) {
+      if (prayer === 'subuh') {
+        playSound('adhan-fajr.mp3');
+      } else {
+        playSound('adhan-makkah.mp3');
+      }
+    } else {
+      playSound('solemn.mp3');
     }
   }
 
@@ -138,7 +149,7 @@
         if (now.getHours() === nMinutesBefore.getHours() && now.getMinutes() === nMinutesBefore.getMinutes() && now.getSeconds() === 0) {
           sendNMinutesPrayerNotification(prayer.name, prayer.time, location);
         } else if (now.getHours() === prayerDate.getHours() && now.getMinutes() === prayerDate.getMinutes() && now.getSeconds() === 0) {
-          sendPrayerNotification(prayer.name, prayer.time, location);
+          sendPrayerNotification(prayer.name, prayer.time, location); 
         }
       }
     }, 1000); // Check every minute
@@ -250,6 +261,7 @@
     await selectedLocationId.start();
     await selectedTimes.start();
     await timeRemaining.start();
+    await selectedAlert.start();
     await fetchLocation();
     await fetchSchedule(selectedLocationId.state.id);
   });

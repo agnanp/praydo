@@ -1,6 +1,7 @@
 use tauri::{
     menu::{Menu, MenuItem, PredefinedMenuItem},
-    tray::TrayIconBuilder, Manager,
+    tray::TrayIconBuilder,
+    Manager,
 };
 use tauri_plugin_notification::NotificationExt;
 
@@ -30,13 +31,13 @@ pub fn run() {
     if cfg!(debug_assertions) {
         dotenv::from_filename(".env.development").unwrap().load();
     } else {
-
         // loads inside the source code relative to this file
         let prod_env = include_str!("../../.env.production");
         let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
         result.load();
     }
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let hide_i = MenuItem::with_id(app, "hide", "Hide", true, None::<&str>)?;

@@ -2916,13 +2916,14 @@ dependencies = [
 
 [[package]]
 name = "praydo"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "dotenvs",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
+ "tauri-plugin-fs",
  "tauri-plugin-http",
  "tauri-plugin-notification",
  "tauri-plugin-opener",

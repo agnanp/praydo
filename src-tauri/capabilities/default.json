@@ -18,6 +18,8 @@
     },
     "notification:default",
     "svelte:default",
-    "core:app:allow-default-window-icon"
+    "core:app:allow-default-window-icon",
+    "fs:default",
+    "fs:allow-resource-read-recursive"
   ]
 }
