@@ -1,7 +1,7 @@
 <script lang="ts">
   import { timeRemaining } from '$lib/store/timeRemaining';
   import { Combobox, createToaster, Tabs } from '@skeletonlabs/skeleton-svelte';
-  import { MapPin, CalendarCheck, AudioLines, BellRing } from '@lucide/svelte';
+  import { MapPin, CalendarCheck, AudioLines, BellRing, X } from '@lucide/svelte';
   import type { ComboboxData } from '$lib/types';
   import { selectedLocationId, selectedLocationLabel } from '$lib/store/selectedLocation';
   import { locationList } from '$lib/api/sholat/LocationApi';
@@ -64,8 +64,12 @@
 
 
 <div class="p-4 max-w-md mx-auto">
-  <h3 class="h3 font-bold mb-4">Settings</h3>
-
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="h3 font-bold">Settings</h3>
+    <a href="/" class="btn p-2">
+      <X size={20} color="#b0b0b0" />
+    </a>
+  </div>
   <div class="mb-4">
     <Tabs value={group} onValueChange={(e) => (group = e.value)}>
       {#snippet list()}
@@ -148,11 +152,5 @@
       {/snippet}
     </Tabs>
     
-  </div>
-
-  <div class="flex justify-start mt-6">
-    <a href="/" class="btn preset-tonal-primary">
-      Close
-    </a>
   </div>
 </div>

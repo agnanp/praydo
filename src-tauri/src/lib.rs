@@ -76,7 +76,18 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![greet, get_env, send_native_notification])
-        
+        .on_window_event(|window, event | match event {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                api.prevent_close();
+                window.hide().unwrap();
+                send_native_notification(
+                    window.app_handle().clone(),
+                    "Praydo Minimized".to_string(),
+                    "Praydo has been minimized to the system tray and will continue running in the background.".to_string()
+                );
+            }
+            _ => {}
+        }) 
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

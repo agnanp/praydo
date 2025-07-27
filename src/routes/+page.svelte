@@ -340,8 +340,8 @@
     </div>
   {/if}
   <div class="flex justify-end">
-    <a href="/settings" class="btn btn-sm variant-soft-surface">
-      <Settings size=20 />
+    <a href="/settings" class="btn btn-sm">
+      <Settings size=20  />
     </a>
   </div>
 </main>
