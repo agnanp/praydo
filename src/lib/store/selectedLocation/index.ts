@@ -4,10 +4,12 @@ export const selectedLocationId = new RuneStore('locationId', { id: ["1301"] }, 
                                               saveOnChange: true,
                                               saveStrategy: 'debounce',
                                               saveInterval: 1000,
+                                              autoStart: true,
                                             });
 
 export const selectedLocationLabel = new RuneStore('locationLabel', { label: "" }, {
                                               saveOnChange: true,
                                               saveStrategy: 'debounce',
                                               saveInterval: 1000,
+                                              autoStart: true,
                                             });

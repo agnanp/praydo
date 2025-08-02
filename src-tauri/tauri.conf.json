@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Praydo",
-  "version": "0.2.0",
-  "identifier": "com.praydo.app",
+  "version": "0.3.0",
+  "identifier": "praydo",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",

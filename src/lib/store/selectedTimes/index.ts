@@ -13,4 +13,5 @@ export const selectedTimes = new RuneStore('times', { daily: {
                                               saveOnChange: true,
                                               saveStrategy: 'debounce',
                                               saveInterval: 1000,
+                                              autoStart: true,
                                             });

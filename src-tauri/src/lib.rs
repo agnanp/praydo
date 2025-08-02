@@ -37,6 +37,9 @@ pub fn run() {
         result.load();
     }
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::Builder::new()
+            .app_name("Praydo")
+            .build())
         .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;

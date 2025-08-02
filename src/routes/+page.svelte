@@ -258,10 +258,6 @@
   }
 
   onMount( async () => {
-    await selectedLocationId.start();
-    await selectedTimes.start();
-    await timeRemaining.start();
-    await selectedAlert.start();
     await fetchLocation();
     await fetchSchedule(selectedLocationId.state.id);
   });

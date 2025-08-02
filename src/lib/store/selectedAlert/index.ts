@@ -10,4 +10,5 @@ export const selectedAlert = new RuneStore('alert', {alert: {
                                             saveOnChange: true,
                                             saveStrategy: 'debounce',
                                             saveInterval: 1000,
+                                            autoStart: true,
                                         });

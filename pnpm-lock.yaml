@@ -23,6 +23,9 @@ importers:
       '@tauri-apps/api':
         specifier: ^2
         version: 2.6.0
+      '@tauri-apps/plugin-autostart':
+        specifier: ~2.5.0
+        version: 2.5.0
       '@tauri-apps/plugin-fs':
         specifier: ~2.4.1
         version: 2.4.1
@@ -570,6 +573,9 @@ packages:
     resolution: {integrity: sha512-s1/eyBHxk0wG1blLeOY2IDjgZcxVrkxU5HFL8rNDwjYGr0o7yr3RAtwmuUPhz13NO+xGAL1bJZaLFBdp+5joKg==}
     engines: {node: '>= 10'}
     hasBin: true
+
+  '@tauri-apps/plugin-autostart@2.5.0':
+    resolution: {integrity: sha512-smSt0vydfVB950AeYRbO2S/c01SZrgMVg4FOrFLQLom0R0amsu/8zYaxgttriBdxcofjBZuHv4hmROBQIBVXmA==}
 
   '@tauri-apps/plugin-fs@2.4.1':
     resolution: {integrity: sha512-vJlKZVGF3UAFGoIEVT6Oq5L4HGDCD78WmA4uhzitToqYiBKWAvZR61M6zAyQzHqLs0ADemkE4RSy/5sCmZm6ZQ==}
@@ -1399,6 +1405,10 @@ snapshots:
       '@tauri-apps/cli-win32-arm64-msvc': 2.6.2
       '@tauri-apps/cli-win32-ia32-msvc': 2.6.2
       '@tauri-apps/cli-win32-x64-msvc': 2.6.2
+
+  '@tauri-apps/plugin-autostart@2.5.0':
+    dependencies:
+      '@tauri-apps/api': 2.6.0
 
   '@tauri-apps/plugin-fs@2.4.1':
     dependencies:

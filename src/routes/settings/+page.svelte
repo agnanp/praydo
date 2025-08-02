@@ -1,13 +1,15 @@
 <script lang="ts">
   import { timeRemaining } from '$lib/store/timeRemaining';
   import { Combobox, createToaster, Tabs } from '@skeletonlabs/skeleton-svelte';
-  import { MapPin, CalendarCheck, AudioLines, BellRing, X } from '@lucide/svelte';
+  import { MapPin, CalendarCheck, AudioLines, BellRing, ChevronLeft } from '@lucide/svelte';
   import type { ComboboxData } from '$lib/types';
   import { selectedLocationId, selectedLocationLabel } from '$lib/store/selectedLocation';
   import { locationList } from '$lib/api/sholat/LocationApi';
   import { onMount } from 'svelte';
   import { selectedTimes } from '$lib/store/selectedTimes';
   import { selectedAlert } from '$lib/store/selectedAlert';
+  import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
+  import { Settings } from '@lucide/svelte';
 
   const options = [
     { value: 5, label: '5 Minutes' },
@@ -19,8 +21,9 @@
   ];
 
   let location = $state<ComboboxData[]>([{label: "", value: ""}]); 
+  let autostartEnabled = $state(false);
 
-  let group = $state('location');
+  let group = $state('general');
 
   const toaster = createToaster({
     placement: 'top-end',
@@ -52,27 +55,37 @@
     }
   }
 
+  async function toggleAutostart() {
+    if (autostartEnabled) {
+      await enable();
+      toaster.success({title: "Autostart Enabled"});
+    } else {
+      await disable();
+      toaster.warning({title: "Autostart Disabled"});
+    }
+  }
+
   onMount( async () => {
     await fetchLocation();
-    await selectedLocationId.start();
-    await selectedTimes.start();
-    await timeRemaining.start();
-    await selectedLocationLabel.start();
-    await selectedAlert.start();
+    autostartEnabled = await isEnabled();
   });
 </script>
 
 
-<div class="p-4 max-w-md mx-auto">
-  <div class="flex justify-between items-center mb-4">
-    <h3 class="h3 font-bold">Settings</h3>
-    <a href="/" class="btn p-2">
-      <X size={20} color="#b0b0b0" />
+<div class="p-4 max-w-2xl mx-auto pt-10">
+  <div class="flex items-center mb-6">
+    <a href="/" class="btn btn-sm variant-ghost-surface mr-4">
+      <ChevronLeft size={24}/>
     </a>
+    <h2 class="h2 font-bold">Settings</h2>
   </div>
-  <div class="mb-4">
+  <div class="card p-4">
     <Tabs value={group} onValueChange={(e) => (group = e.value)}>
       {#snippet list()}
+        <Tabs.Control value="general">
+          {#snippet lead()}<Settings size={20} />{/snippet}
+          General
+        </Tabs.Control>
         <Tabs.Control value="location">
           {#snippet lead()}<MapPin size={20} />{/snippet}
           Location
@@ -91,90 +104,105 @@
         </Tabs.Control>
       {/snippet}
       {#snippet content()}
+        <Tabs.Panel value="general">
+          <div class="p-4">
+            <h6 class="h6 mb-4">Autostart</h6>
+            <label class="flex items-center space-x-2">
+              <input class="checkbox" type="checkbox" bind:checked={autostartEnabled} onchange={toggleAutostart} />
+              <p>Enable Autostart</p>
+            </label>
+          </div>
+        </Tabs.Panel>
         <Tabs.Panel value="location">
-          <Combobox
-            data={location}
-            value={selectedLocationId.state.id}
-            defaultInputValue={selectedLocationLabel.state.label}
-            onValueChange={(e) => (onLocationChange(e.value))}
-            label="Select Location"
-            placeholder="Select..."
-            inputBehavior="autohighlight"
-          >
-          </Combobox>
+          <div class="p-4">
+            <Combobox
+              data={location}
+              value={selectedLocationId.state.id}
+              defaultInputValue={selectedLocationLabel.state.label}
+              onValueChange={(e) => (onLocationChange(e.value))}
+              label="Select Location"
+              placeholder="Search for a city..."
+              inputBehavior="autohighlight"
+            />
+          </div>
         </Tabs.Panel>
         <Tabs.Panel value="display">
-          <h6 class="h6">Prayer Times</h6>
-          <form class="space-y-2">
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.imsak} />
-              <p>Imsak</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.subuh} />
-              <p>Subuh</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.terbit} />
-              <p>Terbit</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.dhuha} />
-              <p>Dhuha</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.dzuhur} />
-              <p>Dzuhur</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.ashar} />
-              <p>Ashar</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.maghrib} />
-              <p>Maghrib</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.isya} />
-              <p>Isya</p> 
-            </label>
-          </form>
+          <div class="p-4">
+            <h6 class="h6 mb-4">Show Prayer Times</h6>
+            <div class="grid grid-cols-2 gap-4">
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.imsak} />
+                <p>Imsak</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.subuh} />
+                <p>Subuh</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.terbit} />
+                <p>Terbit</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.dhuha} />
+                <p>Dhuha</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.dzuhur} />
+                <p>Dzuhur</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.ashar} />
+                <p>Ashar</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.maghrib} />
+                <p>Maghrib</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedTimes.state.daily.isya} />
+                <p>Isya</p> 
+              </label>
+            </div>
+          </div>
         </Tabs.Panel>
         <Tabs.Panel value="sound">
-          <h6 class="h6">Play Adzan At:</h6>
-          <form class="space-y-2">
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.subuh} />
-              <p>Subuh</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.dzuhur} />
-              <p>Dzuhur</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.ashar} />
-              <p>Ashar</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.maghrib} />
-              <p>Maghrib</p>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.isya} />
-              <p>Isya</p> 
-            </label>
-          </form>
+          <div class="p-4">
+            <h6 class="h6 mb-4">Play Adzan At</h6>
+            <div class="grid grid-cols-2 gap-4">
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.subuh} />
+                <p>Subuh</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.dzuhur} />
+                <p>Dzuhur</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.ashar} />
+                <p>Ashar</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.maghrib} />
+                <p>Maghrib</p>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox" bind:checked={selectedAlert.state.alert.isya} />
+                <p>Isya</p> 
+              </label>
+            </div>
+          </div>
         </Tabs.Panel>
         <Tabs.Panel value="alert">
-          <label for="time-remaining" class="block text-sm font-medium text-gray-700 mb-1">Display Notification Before Prayer Times:</label>
-            <select id="time-remaining" bind:value={timeRemaining.state.minutes} class="mt-1 block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <div class="p-4">
+            <label for="time-remaining" class="block text-sm font-medium mb-2">Notification before prayer time</label>
+            <select id="time-remaining" bind:value={timeRemaining.state.minutes} class="select w-full max-w-xs">
               {#each options as option}
                 <option value={option.value}>{option.label}</option>
               {/each}
-          </select>
+            </select>
+          </div>
         </Tabs.Panel>
       {/snippet}
     </Tabs>
-    
   </div>
 </div>
