@@ -35,7 +35,9 @@ type CalculationMethod =
   | "Jafari"
   | "France"
   | "Russia"
-  | "Singapore";
+  | "Singapore"
+  | "NU"
+  | "MU";
 type HighLatitudeMethod = "NightMiddle" | "OneSeventh" | "AngleBased" | "None";
 type AsrMethod = "Standard" | "Hanafi" | number | string;
 type MidnightMethod = "Standard" | "Jafari";
@@ -100,6 +102,7 @@ class PrayTime {
   private labels: string[];
   private utcTime: number = 0;
   private adjusted: boolean = false;
+  private sunPositionCache: Record<number, SunPosition> = {}; // Cache for sun positions
 
   constructor(method?: CalculationMethod) {
     this.methods = {
@@ -113,6 +116,8 @@ class PrayTime {
       France: { fajr: 12, isha: 12 },
       Russia: { fajr: 16, isha: 15 },
       Singapore: { fajr: 20, isha: 18 },
+      NU: { fajr: 20, isha: 18 },
+      MU: { fajr: 18, isha: 18 },
       defaults: { isha: 14, maghrib: "1 min", midnight: "Standard" },
     };
 
@@ -322,6 +327,9 @@ class PrayTime {
 
   // compute prayer times
   private computeTimes(): Times {
+    // Clear the sun position cache for this calculation cycle
+    this.sunPositionCache = {};
+
     let times: Times = {
       fajr: 5,
       sunrise: 6,
@@ -419,6 +427,11 @@ class PrayTime {
 
   // compute sun position
   private sunPosition(time: number): SunPosition {
+    // Check if the sun position for this time is already cached
+    if (this.sunPositionCache[time]) {
+      return this.sunPositionCache[time];
+    }
+
     const lng = this.settings.location[1];
     const D =
       this.utcTime / 864e5 - 10957.5 + this.value(time) / 24 - lng / 360;
@@ -432,10 +445,14 @@ class PrayTime {
       24,
     );
 
-    return {
+    const sunPos = {
       declination: this.arcsin(this.sin(e) * this.sin(L)),
       equation: q / 15 - RA,
     };
+
+    // Cache the result
+    this.sunPositionCache[time] = sunPos;
+    return sunPos;
   }
 
   // compute mid-day

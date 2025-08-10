@@ -12,8 +12,8 @@
 
 ## ✨ Features
 
-- **Daily Prayer Times**: View daily prayer schedules including Imsak, Subuh, Terbit, Dhuha, Dzuhur, Ashar, Maghrib, and Isya.
-- **Location Based**: Search for your location to get accurate prayer times.
+- **Daily Prayer Times**: View daily prayer schedules.
+- **Location Based**: Search for your location using OpenStreetMap to get accurate prayer times.
 - **Next Prayer Countdown**: See how much time is left until the next prayer.
 - **Desktop Notifications**: Get notified on your desktop when it's time for prayer.
 
@@ -32,30 +32,31 @@
 
 ### Development
 
-1.  Clone the repository.
-2.  Install dependencies:
-    ```sh
-    pnpm install
-    ```
-3.  Copy `.env.example` to `.env.development`. The default environment variables should be sufficient for development.
-4.  Run the app:
-    ```sh
-    pnpm tauri dev
-    ```
+1. Clone the repository.
+2. Install dependencies:
+   ```sh
+   pnpm install
+   ```
+3. Copy `.env.example` to `.env.development`. The default environment variables should be sufficient for development.
+4. Run the app:
+   ```sh
+   pnpm tauri dev
+   ```
 
 ### Building
 
 To build the application, you'll first need to create a `.env.production` file. You can copy `.env.example` for this.
 
 Then, run:
+
 ```sh
 pnpm tauri build
 ```
 
-## 🙏 Credits
+## Credits
 
-This application utilizes a third-party API from [myquran.com](https://myquran.com) to fetch prayer schedules. Many thanks to the providers of this data.
+This application uses [PrayTimes.org](http://praytimes.org/) library to calculate prayer times and [OpenStreetMap](https://www.openstreetmap.org/) for location data. Many thanks to the providers of these resources.
 
-## 📄 License
+## License
 
 See the [LICENSE](LICENSE) file for details.

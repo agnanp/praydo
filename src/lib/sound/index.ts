@@ -5,7 +5,7 @@ export async function playSound(fileName: string) {
         { baseDir: BaseDirectory.Resource },
     );
     const mimeType = 'audio/mpeg';
-    const blob = new Blob([filePath], { type: mimeType });
+    const blob = new Blob([new Uint8Array(filePath)], { type: mimeType });
     const assetUrl = URL.createObjectURL(blob);
     const audio = new Audio(assetUrl);
     audio.play();
