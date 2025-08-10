@@ -22,7 +22,7 @@
     import { PrayTime } from "$lib/praytime";
     import { selectedLocation } from "$lib/store/selectedLocation";
     import { calculationSettings } from "$lib/store/calculationSettings";
-  import { goto } from "$app/navigation";
+    import { goto } from "$app/navigation";
 
     // State variables
     let prayTime = $state<PrayTime | null>(null);
@@ -200,7 +200,7 @@
         if (permissionGranted) {
             invoke("send_native_notification", {
                 title: `${timeRemaining.state.minutes} Minutes Until ${prayerName} Time`,
-                body: `${prayerName} ${formattedLocation(selectedLocation.state.label)} ${prayerTime}.`,
+                body: `${prayerName} Time: ${prayerTime}.`,
             });
         }
         playSound("solemn.mp3");

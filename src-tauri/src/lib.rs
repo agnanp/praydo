@@ -92,8 +92,8 @@ pub fn run() {
                 window.hide().unwrap();
                 send_native_notification(
                     window.app_handle().clone(),
-                    "Praydo Minimized".to_string(),
-                    "Praydo has been minimized to the system tray and will continue running in the background.".to_string()
+                    "Praydo Running in the Background".to_string(),
+                    "Click the tray icon to restore.".to_string()
                 );
             }
             _ => {}
