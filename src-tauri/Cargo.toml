@@ -1,8 +1,8 @@
 [package]
 name = "praydo"
-version = "0.3.0"
+version = "0.4.1"
 description = "Pray on Time. Praydo."
-authors = ["Agnan Primahardika <agnan.primahardika@gmail.com>"]
+authors = ["Agnan P <praydo@apr.my.id>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -18,7 +18,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [ "tray-icon" ] }
+tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -30,4 +30,3 @@ tauri-plugin-fs = "2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-autostart = "2"
-

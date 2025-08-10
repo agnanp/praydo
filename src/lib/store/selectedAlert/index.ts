@@ -1,11 +1,11 @@
 import { RuneStore } from "@tauri-store/svelte";
 
 export const selectedAlert = new RuneStore('alert', {alert: {
-                                                            subuh: false,
-                                                            dzuhur: false,
-                                                            ashar: false,
+                                                            fajr: false,
+                                                            dhuhr: false,
+                                                            asr: false,
                                                             maghrib: false,
-                                                            isya: false,
+                                                            isha: false,
                                                             }}, {
                                             saveOnChange: true,
                                             saveStrategy: 'debounce',

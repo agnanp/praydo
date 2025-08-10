@@ -1,15 +1,21 @@
 import { RuneStore } from "@tauri-store/svelte";
 
-export const selectedLocationId = new RuneStore('locationId', { id: ["1301"] }, {
-                                              saveOnChange: true,
-                                              saveStrategy: 'debounce',
-                                              saveInterval: 1000,
-                                              autoStart: true,
-                                            });
+export interface LocationData {
+  id: string;
+  label: string;
+  latitude: number;
+  longitude: number;
+  [key: string]: any; // Add index signature for RuneStore compatibility
+}
 
-export const selectedLocationLabel = new RuneStore('locationLabel', { label: "" }, {
-                                              saveOnChange: true,
-                                              saveStrategy: 'debounce',
-                                              saveInterval: 1000,
-                                              autoStart: true,
-                                            });
+export const selectedLocation = new RuneStore('location', {
+  id: "",
+  label: "",
+  latitude: -6.2088,
+  longitude: 106.8456
+} as LocationData, {
+  saveOnChange: true,
+  saveStrategy: 'debounce',
+  saveInterval: 1000,
+  autoStart: true,
+});
