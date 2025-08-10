@@ -5,6 +5,7 @@
   import { selectedLocation } from '$lib/store/selectedLocation';
   import { geocode } from '$lib/api/location/GeocodeApi';
   import { onMount } from 'svelte';
+  import { listen } from '@tauri-apps/api/event';
   import { selectedTimes } from '$lib/store/selectedTimes';
   import { selectedAlert } from '$lib/store/selectedAlert';
   import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
@@ -36,6 +37,8 @@
 
   let maghribPlaceholder = $derived(`Enter the ${calculationSettings.state.maghribMode === 'degrees' ? 'degrees value' : 'value of minutes after sunset'}`);
   let ishaPlaceholder = $derived(`Enter the ${calculationSettings.state.ishaMode === 'degrees' ? 'degrees value' : 'value of minutes after maghrib'}`);
+
+  let unlistenFn: (() => void) | null = null;
   
   function debounceSearch(query: string) {
     // Clear any existing debounce timer
@@ -131,13 +134,27 @@
     calculationSettings.state.dhuhrMinutes = `${target.value} min`;
   }
 
-  onMount(async () => {
-    autostartEnabled = await isEnabled();
-    if (selectedLocation.state.label) {
-      searchQuery = selectedLocation.state.label;
-    }
-    // Initialize lastRequestTime to ensure proper rate limiting
-    lastRequestTime = Date.now() - 1000; // Allow immediate first request
+
+  onMount(() => {
+    const setup = async () => {
+      autostartEnabled = await isEnabled();
+      if (selectedLocation.state.label) {
+        searchQuery = selectedLocation.state.label;
+      }
+      lastRequestTime = Date.now() - 1000;
+
+      unlistenFn = await listen('navigate_to_main', () => {
+        goto('/');
+      });
+    };
+
+    setup();
+
+    return () => {
+      if (unlistenFn) {
+        unlistenFn();
+      }
+    };
   });
 </script>
 
