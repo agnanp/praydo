@@ -41,7 +41,7 @@
     let notificationInterval: ReturnType<typeof setInterval> | null = null;
     let countdownInterval: ReturnType<typeof setInterval> | null = null;
 
-    function initializePrayTime() {
+    async function initializePrayTime() {
         if (calculationSettings.state.method === 'custom') {
             prayTime = new PrayTime();
             prayTime.location([selectedLocation.state.latitude, selectedLocation.state.longitude]);
@@ -291,7 +291,9 @@
     }
 
     onMount(async () => {
-        initializePrayTime();
+        // wait for stores to be ready
+        await initializePrayTime();
+        
         getPrayerTimes();
         startPrayerReminder();
         updateCountdown();
