@@ -1,6 +1,6 @@
 [package]
 name = "praydo"
-version = "0.4.1"
+version = "0.4.2"
 description = "Pray on Time. Praydo."
 authors = ["Agnan P <praydo@apr.my.id>"]
 edition = "2021"

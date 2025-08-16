@@ -1,8 +1,4 @@
 <script lang="ts">
-    import {
-        Toaster,
-        createToaster,
-    } from "@skeletonlabs/skeleton-svelte";
     import { onDestroy, onMount } from "svelte";
     import {
         getFormattedDate,
@@ -23,7 +19,8 @@
     import { selectedLocation } from "$lib/store/selectedLocation";
     import { calculationSettings } from "$lib/store/calculationSettings";
     import { goto } from "$app/navigation";
-    import Lightswitch from "$lib/components/Lightswitch.svelte";
+    import { sleep } from "$lib/utils/sleep";
+  import { modeLightSwitch } from "$lib/store/modeLightSwitch";
 
     // State variables
     let prayTime = $state<PrayTime | null>(null);
@@ -35,14 +32,10 @@
     let countdown = $state("");
     let currentDay = $state(new Date().getDate());
 
-    const toaster = createToaster({
-        placement: "top-end",
-    });
-
     let notificationInterval: ReturnType<typeof setInterval> | null = null;
     let countdownInterval: ReturnType<typeof setInterval> | null = null;
 
-    async function initializePrayTime() {
+    function initializePrayTime() {
         if (calculationSettings.state.method === 'custom') {
             prayTime = new PrayTime();
             prayTime.location([selectedLocation.state.latitude, selectedLocation.state.longitude]);
@@ -291,13 +284,15 @@
         }, 1000); 
     }
 
-    onMount(async () => {
-        // wait for stores to be ready
-        await initializePrayTime();
-        
-        getPrayerTimes();
-        startPrayerReminder();
-        updateCountdown();
+    onMount(() => {
+        (async () => {
+            await sleep(50);
+            document.documentElement.setAttribute('data-mode', modeLightSwitch.state.mode);
+            initializePrayTime();
+            getPrayerTimes();
+            startPrayerReminder();
+            updateCountdown();
+        })();
     });
 
     onDestroy(() => {
@@ -312,7 +307,6 @@
 </script>
 
 <main class="max-w-3xl mx-auto py-20 px-4">
-    <Toaster {toaster}></Toaster>
     <div class="flex items-baseline justify-center gap-2">
         <MapPin size="13" />
         <span>{formattedLocation(selectedLocation.state.label)}</span>
@@ -400,7 +394,6 @@
         </div>
     </div>
     <div class="flex justify-end space-x-1">
-        <Lightswitch />
         <button type="button" class="btn-icon hover:preset-tonal-primary" title="Settings" aria-label="Settings" onclick={() => goto('settings')}><Settings size={20} /></button>
     </div>
 </main>

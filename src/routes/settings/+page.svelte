@@ -1,6 +1,6 @@
 <script lang="ts">
   import { timeRemaining } from '$lib/store/timeRemaining';
-  import { createToaster, Tabs } from '@skeletonlabs/skeleton-svelte';
+  import { createToaster, Switch, Tabs, Toaster } from '@skeletonlabs/skeleton-svelte';
   import { MapPin, CalendarCheck, BellRing, ChevronLeft, Calculator, Search } from '@lucide/svelte';
   import { selectedLocation } from '$lib/store/selectedLocation';
   import { geocode } from '$lib/api/location/GeocodeApi';
@@ -24,6 +24,7 @@
   ];
 
   let autostartEnabled = $state(false);
+
   let searchQuery = $state('');
 
   let group = $state('location');
@@ -97,14 +98,15 @@
     debounceSearch(searchQuery);
   }
 
-  async function toggleAutostart() {
+  async function toggleAutostart(event: { checked: boolean }) {
     try {
+      autostartEnabled = event.checked;
       if (autostartEnabled) {
-        await enable();
         toaster.success({title: "Autostart Enabled"});
+        await enable();
       } else {
-        await disable();
         toaster.warning({title: "Autostart Disabled"});
+        await disable();
       }
     } catch (error) {
       autostartEnabled = !autostartEnabled;
@@ -159,7 +161,7 @@
   });
 </script>
 
-
+<Toaster {toaster}></Toaster>
 <div class="p-4 max-w-3xl mx-auto pt-10">
   <div class="flex items-center mb-6 space-x-4">
     <button type="button" class="btn-icon hover:preset-tonal-primary" title="Back" aria-label="Back" onclick={() => goto('/')}><ChevronLeft size={24} /></button>
@@ -379,10 +381,16 @@
             </label>
         </Tabs.Panel>
         <Tabs.Panel value="general">
+          <div class="space-y-4">
           <label class="flex items-center space-x-2 px-4">
-            <input class="checkbox" type="checkbox" bind:checked={autostartEnabled} onchange={toggleAutostart} />
-            <p>Enable Autostart</p>
+            <Switch name="autostart" controlActive='preset-tonal-primary' controlInactive='bg-secondary-50' checked={autostartEnabled} onCheckedChange={toggleAutostart} />
+            <p>Autostart at system startup</p>
           </label>
+          <label class="flex items-center space-x-2 px-4">
+            <Lightswitch />
+            <p>Dark Mode</p>
+          </label>
+          </div>
         </Tabs.Panel>
       {/snippet}
     </Tabs>
