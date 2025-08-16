@@ -12,6 +12,7 @@
   import { Settings } from '@lucide/svelte';
   import { calculationSettings, calculationMethods, asrMethods, midnightMethods, highLatitudeMethods } from '$lib/store/calculationSettings';
   import { goto } from '$app/navigation';
+  import Lightswitch from '$lib/components/Lightswitch.svelte';
 
   const options = [
     { value: 5, label: '5 Minutes' },
@@ -202,10 +203,10 @@
             
             </label> 
             {#if selectedLocation.state.label}
-              <div class="mt-4 p-3 bg-surface-500 rounded">
+              <div class="mt-4 p-3 bg-surface-500 rounded dark:bg-surface-800">
                 <p class="font-medium">Selected Location:</p>
                 <p>{selectedLocation.state.label}</p>
-                <p class="text-sm text-surface-700">
+                <p class="text-sm text-surface-700 dark:text-surface-600">
                   Coordinates: {selectedLocation.state.latitude}, {selectedLocation.state.longitude}
                 </p>
               </div>

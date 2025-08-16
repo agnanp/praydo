@@ -23,6 +23,7 @@
     import { selectedLocation } from "$lib/store/selectedLocation";
     import { calculationSettings } from "$lib/store/calculationSettings";
     import { goto } from "$app/navigation";
+    import Lightswitch from "$lib/components/Lightswitch.svelte";
 
     // State variables
     let prayTime = $state<PrayTime | null>(null);
@@ -398,7 +399,8 @@
             {/if}
         </div>
     </div>
-    <div class="flex justify-end">
+    <div class="flex justify-end space-x-1">
+        <Lightswitch />
         <button type="button" class="btn-icon hover:preset-tonal-primary" title="Settings" aria-label="Settings" onclick={() => goto('settings')}><Settings size={20} /></button>
     </div>
 </main>

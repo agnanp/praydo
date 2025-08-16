@@ -4,7 +4,8 @@
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/optional/presets';
 @import '@skeletonlabs/skeleton/themes/cerberus';
-@import '@skeletonlabs/skeleton/themes/mint';
 
 @source '../node_modules/@skeletonlabs/skeleton-svelte/dist';
 @import './praydo.css';
+
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
