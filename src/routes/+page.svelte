@@ -409,12 +409,12 @@
                     <div class="text-center space-y-2">
                         {#if countdown}
                             <h1
-                                class="text-7xl font-bold text-white tracking-tighter drop-shadow-sm"
+                                class="text-7xl font-bold text-white tracking-tighter drop-shadow-sm tabular-nums"
                             >
                                 {countdown.split(":")[0]}:{countdown.split(
                                     ":",
                                 )[1]}<span
-                                    class="text-white/40 text-4xl font-light"
+                                    class="text-white/40 text-4xl font-light ml-0.5"
                                     >:{countdown.split(":")[2]}</span
                                 >
                             </h1>
@@ -438,7 +438,7 @@
                                     {nextPrayerTime}
                                 </p>
                             </div>
-                            <div class="card preset-tonal-surface p-4">
+                            <div class="card p-4">
                                 <PrayerIcon class="text-white w-8 h-8" />
                             </div>
                         {:else}
@@ -513,7 +513,9 @@
                         >
                             Current Location
                         </p>
-                        <p class="text-surface-200 font-bold line-clamp-2 text-balance">
+                        <p
+                            class="text-surface-200 font-bold line-clamp-2 text-balance"
+                        >
                             {formattedLocation(selectedLocation.state.label)}
                         </p>
                     </div>
