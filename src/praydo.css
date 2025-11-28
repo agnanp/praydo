@@ -203,3 +203,53 @@
 	--color-surface-contrast-900: var(--color-surface-contrast-light);
 	--color-surface-contrast-950: var(--color-surface-contrast-light);
 }
+
+/* Custom Glassmorphism Presets */
+.preset-glass-surface {
+	background: color-mix(in oklab, var(--color-surface-100-900) 50%, transparent);
+	box-shadow: 0 0px 30px color-mix(in oklab, var(--color-surface-100-900) 20%, transparent) inset;
+	backdrop-filter: blur(48px);
+	border: 1px solid color-mix(in oklab, var(--color-surface-200-800) 60%, transparent);
+}
+
+.preset-gradient-primary {
+	background: linear-gradient(135deg, var(--color-success-500), var(--color-primary-500));
+	box-shadow: 0 20px 40px color-mix(in oklab, var(--color-primary-500) 20%, transparent);
+	position: relative;
+	overflow: hidden;
+}
+
+/* Ghost preset for passed prayers */
+.preset-ghost {
+	background: transparent;
+}
+
+.preset-ghost:hover {
+	background: color-mix(in oklab, var(--color-surface-100-900) 40%, transparent);
+}
+
+/* Background blob animations */
+@keyframes pulse-slow {
+	0%, 100% {
+		opacity: 0.3;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.5;
+		transform: scale(1.1);
+	}
+}
+
+.animate-pulse-slow {
+	animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hide scrollbar for clean timeline */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
