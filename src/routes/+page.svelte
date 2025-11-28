@@ -513,7 +513,7 @@
                         >
                             Current Location
                         </p>
-                        <p class="text-surface-200 font-bold truncate">
+                        <p class="text-surface-200 font-bold line-clamp-2 text-balance">
                             {formattedLocation(selectedLocation.state.label)}
                         </p>
                     </div>
