@@ -87,6 +87,8 @@ The tag should match: `v0.4.3`
 The workflow uses these environment variables:
 - `GITHUB_TOKEN`: Automatically provided by GitHub Actions (no setup needed)
 
+Note: The OpenStreetMap geocoding URL is hardcoded in the application and does not require environment variable configuration.
+
 ### Code Signing (Optional)
 
 For production releases, you may want to add code signing:

@@ -12,11 +12,6 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn get_env(name: &str) -> String {
-    std::env::var(String::from(name)).unwrap_or(String::from(""))
-}
-
-#[tauri::command]
 fn send_native_notification(app: tauri::AppHandle, title: String, body: String) {
     app.notification()
         .builder()
@@ -33,14 +28,6 @@ fn navigate_to_main(app: tauri::AppHandle) {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    if cfg!(debug_assertions) {
-        dotenv::from_filename(".env.development").unwrap().load();
-    } else {
-        // loads inside the source code relative to this file
-        let prod_env = include_str!("../../.env.production");
-        let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
-        result.load();
-    }
     tauri::Builder::default()
         .plugin(tauri_plugin_autostart::Builder::new()
             .app_name("Praydo")
@@ -84,7 +71,7 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, get_env, send_native_notification])
+        .invoke_handler(tauri::generate_handler![greet, send_native_notification])
         .on_window_event(|window, event| match event {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 api.prevent_close();

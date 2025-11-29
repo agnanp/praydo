@@ -1,8 +1,9 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import { getEnv } from "../../env";
+
+const GEOCODE_BASE_URL = "https://nominatim.openstreetmap.org/search";
 
 export const geocode = async (place: string) => {
-  const url: string = await getEnv("GEOCODE_BASE_URL");
+  const url = GEOCODE_BASE_URL;
 
   const params = new URLSearchParams({
     q: place,

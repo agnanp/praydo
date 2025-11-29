@@ -37,17 +37,14 @@
    ```sh
    pnpm install
    ```
-3. Copy `.env.example` to `.env.development`. The default environment variables should be sufficient for development.
-4. Run the app:
+3. Run the app:
    ```sh
    pnpm tauri dev
    ```
 
 ### Building
 
-To build the application, you'll first need to create a `.env.production` file. You can copy `.env.example` for this.
-
-Then, run:
+To build the application, run:
 
 ```sh
 pnpm tauri build
