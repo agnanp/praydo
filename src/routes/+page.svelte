@@ -14,6 +14,8 @@
         Sun,
         Moon,
         Compass,
+        Dot,
+        Circle,
     } from "@lucide/svelte";
     import { invoke } from "@tauri-apps/api/core";
 
@@ -93,16 +95,6 @@
 
         const monthName = hijriMonths[hijriDate.month - 1];
         return `${hijriDate.day} ${monthName} ${hijriDate.year} AH`;
-    }
-
-    // Helper function to determine prayer status
-    function getPrayerStatus(prayerName: string) {
-        if (prayerName === nextPrayerName) return "next";
-        const timeString = prayerTimes[prayerName.toLowerCase()];
-        if (!timeString) return "upcoming"; // Default to upcoming if time not yet loaded
-        const now = new Date();
-        const prayerDate = parseTime(timeString);
-        return prayerDate < now ? "passed" : "upcoming";
     }
 
     function initializePrayTime() {
@@ -401,7 +393,7 @@
             <div class="card col-span-8 preset-filled-primary-500 p-8">
                 <div class="h-full flex flex-col justify-between">
                     <div class="flex justify-between items-start">
-                        <span class="badge preset-tonal text-white">
+                        <span class="badge preset-filled-tertiary-50-950">
                             Next Prayer
                         </span>
                     </div>
@@ -409,17 +401,17 @@
                     <div class="text-center space-y-2">
                         {#if countdown}
                             <h1
-                                class="text-7xl font-bold text-white tracking-tighter drop-shadow-sm tabular-nums"
+                                class="text-7xl font-bold text-tertiary-50 tracking-tighter drop-shadow-sm tabular-nums"
                             >
                                 {countdown.split(":")[0]}:{countdown.split(
                                     ":",
                                 )[1]}<span
-                                    class="text-white/40 text-4xl font-light ml-0.5"
+                                    class="text-tertiary-500 text-4xl font-light ml-0.5"
                                     >:{countdown.split(":")[2]}</span
                                 >
                             </h1>
                             <p
-                                class="text-emerald-50 text-sm font-medium tracking-widest uppercase"
+                                class="text-secondary-300 text-sm font-medium tracking-widest uppercase"
                             >
                                 Remaining until {nextPrayerName ||
                                     nextDayPrayerName}
@@ -431,29 +423,29 @@
                         {#if nextPrayerName}
                             {@const PrayerIcon = getPrayerIcon(nextPrayerName)}
                             <div>
-                                <h2 class="text-3xl font-bold text-white">
+                                <h2 class="text-3xl font-bold text-tertiary-50">
                                     {nextPrayerName}
                                 </h2>
-                                <p class="text-emerald-100 font-mono">
+                                <p class="text-secondary-300 font-mono">
                                     {nextPrayerTime}
                                 </p>
                             </div>
                             <div class="card p-4">
-                                <PrayerIcon class="text-white w-8 h-8" />
+                                <PrayerIcon class="text-tertiary-50 w-8 h-8" />
                             </div>
                         {:else}
                             {@const PrayerIcon =
                                 getPrayerIcon(nextDayPrayerName)}
                             <div>
-                                <h2 class="text-3xl font-bold text-white">
+                                <h2 class="text-3xl font-bold text-tertiary-50">
                                     {nextDayPrayerName}
                                 </h2>
-                                <p class="text-emerald-100 font-mono">
+                                <p class="text-secondary-300 font-mono">
                                     {nextDayPrayerTime}
                                 </p>
                             </div>
                             <div class="card p-4">
-                                <PrayerIcon class="text-white w-8 h-8" />
+                                <PrayerIcon class="text-tertiary-50 w-8 h-8" />
                             </div>
                         {/if}
                     </div>
@@ -467,12 +459,12 @@
                     class="card flex-1 preset-filled-secondary-500 p-6 flex flex-col justify-between group"
                 >
                     <div class="flex items-start justify-end">
-                        <span class="text-4xl font-light text-surface-50">
+                        <span class="text-4xl font-light text-tertiary-50">
                             {currentTime
                                 .getHours()
                                 .toString()
                                 .padStart(2, "0")}<span
-                                class="animate-pulse text-surface-50">:</span
+                                class="animate-pulse text-tertiary-50">:</span
                             >{currentTime
                                 .getMinutes()
                                 .toString()
@@ -481,18 +473,16 @@
                     </div>
                     <div>
                         <p
-                            class="text-tertiary-500 text-xs font-bold uppercase tracking-wider mb-1"
+                            class="text-primary-500 text-xs font-bold uppercase tracking-wider mb-1"
                         >
                             Today
                         </p>
                         <p
-                            class="text-surface-200 text-lg font-bold leading-tight"
+                            class="text-tertiary-50 text-lg font-bold leading-tight"
                         >
                             {getFormattedDate()}
                         </p>
-                        <p
-                            class="text-tertiary-600-400 text-sm mt-1 font-medium"
-                        >
+                        <p class="text-primary-500 text-sm mt-1 font-medium">
                             {getIslamicDate()}
                         </p>
                     </div>
@@ -503,18 +493,18 @@
                     class="card h-1/3 preset-filled-secondary-500 p-5 flex items-center gap-4"
                 >
                     <div
-                        class="bg-warning-500/10 dark:bg-warning-600/20 p-3 rounded-full text-warning-500 dark:text-warning-400"
+                        class="bg-tertiary-300/10 p-3 rounded-full text-tertiary-300"
                     >
                         <MapPin size={18} />
                     </div>
                     <div class="overflow-hidden">
                         <p
-                            class="text-tertiary-500 text-[10px] font-bold uppercase tracking-wider"
+                            class="text-primary-500 text-[10px] font-bold uppercase tracking-wider"
                         >
                             Current Location
                         </p>
                         <p
-                            class="text-surface-200 font-bold line-clamp-2 text-balance"
+                            class="text-tertiary-50 font-bold line-clamp-2 text-balance"
                         >
                             {formattedLocation(selectedLocation.state.label)}
                         </p>
@@ -525,41 +515,42 @@
 
         <!-- Bottom Section: Horizontal Timeline -->
         <div
-            class="card h-28 preset-filled-surface-100-900 p-2 flex items-center gap-2 overflow-x-auto mb-4"
+            class="card h-28 preset-outlined-primary-500 p-2 flex items-center gap-2 overflow-x-auto mb-4"
         >
             {#each [{ name: "Fajr", time: prayerTimes.fajr, enabled: selectedTimes.state.daily.fajr }, { name: "Sunrise", time: prayerTimes.sunrise, enabled: selectedTimes.state.daily.sunrise }, { name: "Dhuhr", time: prayerTimes.dhuhr, enabled: selectedTimes.state.daily.dhuhr }, { name: "Asr", time: prayerTimes.asr, enabled: selectedTimes.state.daily.asr }, { name: "Maghrib", time: prayerTimes.maghrib, enabled: selectedTimes.state.daily.maghrib }, { name: "Isha", time: prayerTimes.isha, enabled: selectedTimes.state.daily.isha }].filter((p) => p.enabled && p.time) as prayer}
                 {@const isNext = prayer.name === nextPrayerName}
-                {@const isPassed = getPrayerStatus(prayer.name) === "passed"}
                 {@const PrayerIcon = getPrayerIcon(prayer.name)}
 
                 <div
                     class="badge relative flex-1 min-w-[120px] h-full flex-col items-center justify-center gap-2 transition-all duration-300 {isNext
-                        ? 'preset-filled-success-500'
-                        : isPassed
-                          ? 'preset-outlined-primary-500 text-primary-500'
-                          : 'preset-tonal-surface !text-surface-900-100'}"
+                        ? 'preset-filled-primary-500'
+                        : 'preset-tonal-surface text-primary-500'}"
                 >
                     {#if isNext}
-                        <div
-                            class="badge variant-filled-secondary absolute top-2 right-2 text-xs"
-                        >
-                            Next
+                        <div class="absolute top-2 right-2">
+                            <Circle
+                                size={10}
+                                class="text-tertiary-500 fill-tertiary-500 animate-pulse"
+                            />
                         </div>
                     {/if}
 
-                    <PrayerIcon size={18} class={isNext ? "text-white" : ""} />
+                    <PrayerIcon
+                        size={18}
+                        class={isNext ? "text-tertiary-50" : ""}
+                    />
 
                     <div class="text-center">
                         <span
                             class="text-xs font-bold uppercase tracking-wider block {isNext
-                                ? 'opacity-100'
+                                ? 'opacity-100 text-tertiary-50'
                                 : 'opacity-70'}"
                         >
                             {prayer.name}
                         </span>
                         <span
                             class="text-lg font-mono {isNext
-                                ? 'font-bold'
+                                ? 'font-bold text-secondary-300'
                                 : 'font-medium'}"
                         >
                             {prayer.time}
@@ -573,7 +564,7 @@
         <div>
             <button
                 type="button"
-                class="btn-icon preset-tonal-surface absolute bottom-4 right-6"
+                class="btn-icon preset-tonal-tertiary absolute bottom-4 right-6"
                 title="Settings"
                 aria-label="Settings"
                 onclick={() => goto("settings")}
