@@ -139,7 +139,7 @@
 
                 <!-- Widget 2: Location & Qibla -->
                 <div
-                    class="card h-1/3 preset-filled-secondary-500 p-5 flex items-center justify-between gap-4"
+                    class="card flex-1 preset-filled-secondary-500 p-5 flex items-center justify-between gap-4"
                 >
                     <div class="overflow-hidden flex-1">
                         <div class="flex items-center gap-2 mb-1">
@@ -157,7 +157,7 @@
                     </div>
                     
                     <div class="shrink-0 bg-surface-50/10 rounded-full p-1" title="Qibla Direction: {Math.round(manager.qiblaDirection)}°">
-                         <QiblaCompass bearing={manager.qiblaDirection} size={56} />
+                         <QiblaCompass bearing={manager.qiblaDirection} size={72} />
                     </div>
                 </div>
             </div>
