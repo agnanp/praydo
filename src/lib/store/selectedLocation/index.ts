@@ -8,7 +8,13 @@ export interface LocationData {
   [key: string]: any; // Add index signature for RuneStore compatibility
 }
 
-export const selectedLocation = new RuneStore('location', {
+class LocationStore<T extends Record<string, any>> extends RuneStore<T> {
+  public async init() {
+    await this.load();
+  }
+}
+
+export const selectedLocation = new LocationStore('location', {
   id: "",
   label: "",
   latitude: -6.2088,

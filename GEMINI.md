@@ -12,13 +12,17 @@ Praydo is a cross-platform desktop application for displaying Muslim prayer time
 - Customizable calculation methods for different regions
 - System tray integration with minimize/close handling
 - Autostart functionality
+- Hijri Date conversion
+- Qibla Compass
+- Monthly Prayer Calendar
 
 ### Technology Stack
 - **Frontend**: SvelteKit with TypeScript
-- **Backend**: Rust (Tauri)
-- **UI Framework**: Skeleton (Svelte component library)
+- **Framework**: Svelte 5 (Runes syntax)
+- **Backend**: Rust (Tauri v2)
+- **UI Framework**: Skeleton v3 + TailwindCSS v4
 - **State Management**: Tauri Store for Svelte
-- **Build System**: Vite
+- **Build System**: Vite 6
 - **Package Manager**: pnpm
 
 ## Project Structure
@@ -28,11 +32,15 @@ praydo/
 ├── src/                 # SvelteKit frontend source code
 │   ├── lib/             # Shared libraries and utilities
 │   │   ├── api/         # API clients (geocoding)
+│   │   ├── components/  # Reusable UI components (Qibla, Lightswitch)
+│   │   ├── logic/       # Business logic (PrayerManager)
 │   │   ├── praytime/    # Prayer time calculation library
 │   │   ├── store/       # Application state management
 │   │   ├── sound/       # Audio playback utilities
 │   │   └── utils/       # Helper functions
 │   ├── routes/          # SvelteKit pages
+│   │   ├── +page.svelte # Main Dashboard
+│   │   ├── calendar/    # Monthly Calendar
 │   │   └── settings/    # Settings page
 │   └── app.html         # Main HTML template
 ├── src-tauri/           # Tauri backend (Rust)
@@ -62,7 +70,7 @@ The application uses a customized version of the PrayTimes.org library (in `src/
 - Lembaga Falakiyah NU, Indonesia (default)
 
 ### Location Services
-Location data is retrieved using OpenStreetMap's Nominatim service. Users can search for locations which are then geocoded to latitude/longitude coordinates for accurate prayer time calculations.
+Location data is retrieved using OpenStreetMap's Nominatim service via `src/lib/api/location/GeocodeApi.ts`. Users can search for locations which are then geocoded to latitude/longitude coordinates for accurate prayer time calculations.
 
 ### State Management
 The application uses Tauri Store for Svelte to persist user settings:
@@ -89,13 +97,11 @@ The application uses Tauri Store for Svelte to persist user settings:
 ### Setup
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Copy `.env.example` to `.env.development` for local development
-4. Run the development server: `pnpm tauri dev`
+3. Run the development server: `pnpm tauri dev`
 
 ### Building
-1. Create a `.env.production` file (copy from `.env.example`)
-2. Build the application: `pnpm tauri build`
-3. Distributable files will be in the `src-tauri/target/release/bundle/` directory
+1. Build the application: `pnpm tauri build`
+2. Distributable files will be in the `src-tauri/target/release/bundle/` directory
 
 ### Available Scripts
 - `pnpm dev` - Start the Vite development server
@@ -105,10 +111,6 @@ The application uses Tauri Store for Svelte to persist user settings:
 - `pnpm check` - Run Svelte type checking
 
 ## Configuration
-
-### Environment Variables
-The application requires the following environment variable:
-- `GEOCODE_BASE_URL`: URL for the geocoding service (default: https://nominatim.openstreetmap.org/search)
 
 ### Tauri Configuration
 The `tauri.conf.json` file configures:
@@ -128,18 +130,12 @@ New calculation methods can be added by:
 ### Modifying UI
 The UI is built with Svelte components:
 - Main page: `src/routes/+page.svelte`
+- Calendar page: `src/routes/calendar/+page.svelte`
 - Settings page: `src/routes/settings/+page.svelte`
 - Layout: `src/routes/+layout.svelte`
 
 ### Adding Sound Files
 Audio files are stored in the `assets/` directory and accessed through the Tauri filesystem plugin. New sounds can be added by placing them in this directory and referencing them in the code.
-
-## Testing
-
-Currently, the application relies on manual testing. Future improvements could include:
-- Unit tests for the prayer time calculation logic
-- Integration tests for the location search functionality
-- UI tests for the Svelte components
 
 ## Deployment
 
@@ -147,14 +143,6 @@ The application is bundled for distribution using Tauri's built-in bundler, whic
 - Windows: MSI installer
 - macOS: DMG or App bundle
 - Linux: AppImage, Debian package, or RPM package
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
 
 ## Credits
 

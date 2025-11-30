@@ -172,6 +172,12 @@
             autostartEnabled = await isEnabled();
             if (selectedLocation.state.label) {
                 searchQuery = selectedLocation.state.label;
+            } else {
+                toaster.error({
+                    title: "Location Required",
+                    description: "Please set your location to calculate prayer times correctly.",
+                    duration: 10000,
+                });
             }
             lastRequestTime = Date.now() - 1000;
 
@@ -194,6 +200,12 @@
                 unlistenFn();
             }
         };
+    });
+
+    $effect(() => {
+        if (!selectedLocation.state.label && group !== "location") {
+            group = "location";
+        }
     });
 </script>
 
