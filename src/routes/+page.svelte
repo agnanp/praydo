@@ -1,56 +1,23 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
-    import { getFormattedDate } from "$lib/formatedDate";
-    import {
-        isPermissionGranted,
-        requestPermission,
-    } from "@tauri-apps/plugin-notification";
-    import { formattedLocation } from "$lib/utils/stringUtils";
     import {
         MapPin,
-        Settings,
         Sunrise,
         Sunset,
         Sun,
         Moon,
-        Compass,
-        Dot,
         Circle,
+        Settings,
     } from "@lucide/svelte";
-    import { invoke } from "@tauri-apps/api/core";
-
-    import { timeRemaining } from "$lib/store/timeRemaining";
-    import { selectedTimes } from "$lib/store/selectedTimes";
-    import { playSound } from "$lib/sound";
-    import { selectedAlert } from "$lib/store/selectedAlert";
-    import { PrayTime } from "$lib/praytime";
-    import { selectedLocation } from "$lib/store/selectedLocation";
-    import { calculationSettings } from "$lib/store/calculationSettings";
     import { goto } from "$app/navigation";
-    import { sleep } from "$lib/utils/sleep";
     import { modeLightSwitch } from "$lib/store/modeLightSwitch";
-    import { gregorianToHijri } from "@tabby_ai/hijri-converter";
+    import { PrayerManager } from "$lib/logic/PrayerManager.svelte";
 
-    // State variables
-    let prayTime = $state<PrayTime | null>(null);
-    let prayerTimes = $state<Record<string, string>>({});
-    let nextPrayerName = $state("");
-    let nextPrayerTime = $state("");
-    let nextDayPrayerName = $state("");
-    let nextDayPrayerTime = $state("");
-    let countdown = $state("");
-    let currentDay = $state(new Date().getDate());
-
-    let notificationInterval: ReturnType<typeof setInterval> | null = null;
-    let countdownInterval: ReturnType<typeof setInterval> | null = null;
-    let currentTime = $state(new Date());
-
-    // Update current time every second
-    let currentTimeInterval: ReturnType<typeof setInterval> | null = null;
+    const manager = new PrayerManager();
 
     // Helper function to get icon for each prayer
     function getPrayerIcon(prayerName: string) {
-        switch (prayerName.toLowerCase()) {
+        switch (prayerName?.toLowerCase()) {
             case "fajr":
                 return Moon;
             case "sunrise":
@@ -68,320 +35,15 @@
         }
     }
 
-    // Helper function to get Islamic date using Hijri calendar
-    function getIslamicDate() {
-        const now = new Date();
-        const hijriDate = gregorianToHijri({
-            year: now.getFullYear(),
-            month: now.getMonth() + 1, // JavaScript months are 0-indexed
-            day: now.getDate(),
-        });
-
-        // Hijri month names (in order 1-12)
-        const hijriMonths = [
-            "Muharram",
-            "Safar",
-            "Rabi al-Awwal",
-            "Rabi al-Thani",
-            "Jumada al-Awwal",
-            "Jumada al-Thani",
-            "Rajab",
-            "Shaban",
-            "Ramadan",
-            "Shawwal",
-            "Dhul-Qadah",
-            "Dhul-Hijjah",
-        ];
-
-        const monthName = hijriMonths[hijriDate.month - 1];
-        return `${hijriDate.day} ${monthName} ${hijriDate.year} AH`;
-    }
-
-    function initializePrayTime() {
-        if (calculationSettings.state.method === "custom") {
-            prayTime = new PrayTime();
-            prayTime.location([
-                selectedLocation.state.latitude,
-                selectedLocation.state.longitude,
-            ]);
-            prayTime.format(selectedTimes.state.format);
-            prayTime.adjust({
-                fajr: calculationSettings.state.fajrAngle,
-                dhuhr: calculationSettings.state.dhuhrMinutes,
-                asr: calculationSettings.state.asrMethod,
-                maghrib: calculationSettings.state.maghrib,
-                isha: calculationSettings.state.isha,
-                midnight: calculationSettings.state.midnight,
-                highLats: calculationSettings.state.highLatitudes,
-            });
-        } else {
-            prayTime = new PrayTime(calculationSettings.state.method);
-            prayTime.location([
-                selectedLocation.state.latitude,
-                selectedLocation.state.longitude,
-            ]);
-            prayTime.format(selectedTimes.state.format);
-            prayTime.adjust({
-                dhuhr: calculationSettings.state.dhuhrMinutes,
-                asr: calculationSettings.state.asrMethod,
-                highLats: calculationSettings.state.highLatitudes,
-            });
-        }
-    }
-
-    function getPrayerTimes() {
-        if (!prayTime) return;
-        const now = new Date();
-        const times = prayTime.getTimes(now);
-        prayerTimes = {
-            fajr: times.fajr,
-            sunrise: times.sunrise,
-            dhuhr: times.dhuhr,
-            asr: times.asr,
-            maghrib: times.maghrib,
-            isha: times.isha,
-        };
-    }
-
-    function parseTime(timeString: string): Date {
-        const now = new Date();
-        if (!timeString) return now; // Return current time if undefined
-
-        const [time, modifier] = timeString.split(" ");
-        let [hours, minutes] = time.split(":").map(Number);
-
-        if (modifier === "PM" && hours < 12) {
-            hours += 12;
-        }
-        if (modifier === "AM" && hours === 12) {
-            hours = 0;
-        }
-
-        now.setHours(hours, minutes, 0, 0);
-        return now;
-    }
-
-    function updateCountdown() {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
-        countdownInterval = setInterval(() => {
-            if (!prayerTimes) {
-                return;
-            }
-
-            const now = new Date();
-            if (now.getDate() !== currentDay) {
-                currentDay = now.getDate();
-                getPrayerTimes();
-            }
-
-            const prayers = [
-                { name: "Fajr", time: prayerTimes.fajr },
-                { name: "Sunrise", time: prayerTimes.sunrise },
-                { name: "Dhuhr", time: prayerTimes.dhuhr },
-                { name: "Asr", time: prayerTimes.asr },
-                { name: "Maghrib", time: prayerTimes.maghrib },
-                { name: "Isha", time: prayerTimes.isha },
-            ].filter(
-                (p) =>
-                    selectedTimes.state.daily[
-                        p.name.toLowerCase() as keyof typeof selectedTimes.state.daily
-                    ],
-            );
-
-            let nextPrayerFound = false;
-
-            for (const prayer of prayers) {
-                const prayerDate = parseTime(prayer.time);
-
-                if (prayerDate > now) {
-                    const diff = prayerDate.getTime() - now.getTime();
-                    const hours = Math.floor(diff / (1000 * 60 * 60));
-                    const minutes = Math.floor(
-                        (diff % (1000 * 60 * 60)) / (1000 * 60),
-                    );
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                    countdown = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-                    nextPrayerName = prayer.name;
-                    nextPrayerTime = prayer.time;
-                    nextPrayerFound = true;
-                    break;
-                }
-            }
-
-            if (!nextPrayerFound) {
-                // Handle next day's prayer
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const nextDayPrayerTimes = prayTime?.getTimes(tomorrow) || {};
-                const nextDayPrayers = [
-                    { name: "Fajr", time: nextDayPrayerTimes.fajr },
-                    { name: "Sunrise", time: nextDayPrayerTimes.sunrise },
-                    { name: "Dhuhr", time: nextDayPrayerTimes.dhuhr },
-                    { name: "Asr", time: nextDayPrayerTimes.asr },
-                    { name: "Maghrib", time: nextDayPrayerTimes.maghrib },
-                    { name: "Isha", time: nextDayPrayerTimes.isha },
-                ].filter(
-                    (p) =>
-                        selectedTimes.state.daily[
-                            p.name.toLowerCase() as keyof typeof selectedTimes.state.daily
-                        ],
-                );
-
-                if (nextDayPrayers.length > 0) {
-                    const nextPrayer = nextDayPrayers[0];
-                    nextPrayerName = "";
-                    nextPrayerTime = "";
-                    nextDayPrayerTime = nextPrayer.time;
-                    const prayerDate = parseTime(nextDayPrayerTime);
-                    prayerDate.setDate(prayerDate.getDate() + 1);
-
-                    const diff = prayerDate.getTime() - now.getTime();
-                    const hours = Math.floor(diff / (1000 * 60 * 60));
-                    const minutes = Math.floor(
-                        (diff % (1000 * 60 * 60)) / (1000 * 60),
-                    );
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                    countdown = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-                    nextDayPrayerName = nextPrayer.name;
-                }
-            }
-        }, 1000);
-    }
-
-    async function sendNMinutesPrayerNotification(
-        prayerName: string,
-        prayerTime: string,
-    ) {
-        let permissionGranted = await isPermissionGranted();
-        if (!permissionGranted) {
-            const permission = await requestPermission();
-            permissionGranted = permission === "granted";
-        }
-        if (permissionGranted) {
-            invoke("send_native_notification", {
-                title: `${timeRemaining.state.minutes} Minutes Until ${prayerName} Time`,
-                body: `${prayerName} Time: ${prayerTime}.`,
-            });
-        }
-        playSound("solemn.mp3");
-    }
-
-    async function sendPrayerNotification(
-        prayerName: string,
-        prayerTime: string,
-    ) {
-        let permissionGranted = await isPermissionGranted();
-        if (!permissionGranted) {
-            const permission = await requestPermission();
-            permissionGranted = permission === "granted";
-        }
-        if (permissionGranted) {
-            invoke("send_native_notification", {
-                title: `${prayerName} Time ${prayerTime}`,
-                body: `${prayerName} time in ${formattedLocation(selectedLocation.state.label)}.`,
-            });
-        }
-        const prayer = prayerName.toLowerCase();
-        if (
-            selectedAlert.state.alert[
-                prayer as keyof typeof selectedAlert.state.alert
-            ]
-        ) {
-            if (prayer === "fajr") {
-                playSound("adhan-fajr.mp3");
-            } else {
-                playSound("adhan-makkah.mp3");
-            }
-        } else {
-            playSound("solemn.mp3");
-        }
-    }
-
-    function startPrayerReminder() {
-        if (notificationInterval) {
-            clearInterval(notificationInterval);
-        }
-
-        notificationInterval = setInterval(() => {
-            if (!prayerTimes) {
-                return;
-            }
-
-            const now = new Date();
-
-            const prayers = [
-                { name: "Fajr", time: prayerTimes.fajr },
-                { name: "Sunrise", time: prayerTimes.sunrise },
-                { name: "Dhuhr", time: prayerTimes.dhuhr },
-                { name: "Asr", time: prayerTimes.asr },
-                { name: "Maghrib", time: prayerTimes.maghrib },
-                { name: "Isha", time: prayerTimes.isha },
-            ].filter(
-                (p) =>
-                    selectedTimes.state.daily[
-                        p.name.toLowerCase() as keyof typeof selectedTimes.state.daily
-                    ],
-            );
-
-            for (const prayer of prayers) {
-                const prayerDate = parseTime(prayer.time);
-                const nMinutesBefore = new Date(
-                    prayerDate.getTime() -
-                        timeRemaining.state.minutes * 60 * 1000,
-                );
-
-                if (
-                    now.getHours() === nMinutesBefore.getHours() &&
-                    now.getMinutes() === nMinutesBefore.getMinutes() &&
-                    now.getSeconds() === 0
-                ) {
-                    sendNMinutesPrayerNotification(prayer.name, prayer.time);
-                } else if (
-                    now.getHours() === prayerDate.getHours() &&
-                    now.getMinutes() === prayerDate.getMinutes() &&
-                    now.getSeconds() === 0
-                ) {
-                    sendPrayerNotification(prayer.name, prayer.time);
-                }
-            }
-        }, 1000);
-    }
-
     onMount(() => {
-        (async () => {
-            await sleep(50);
-            document.documentElement.setAttribute(
-                "data-mode",
-                modeLightSwitch.state.mode,
-            );
-            initializePrayTime();
-            getPrayerTimes();
-            startPrayerReminder();
-            updateCountdown();
-
-            // Update current time every second
-            currentTimeInterval = setInterval(() => {
-                currentTime = new Date();
-            }, 1000);
-        })();
+        document.documentElement.setAttribute(
+            "data-mode",
+            modeLightSwitch.state.mode,
+        );
     });
 
     onDestroy(() => {
-        if (notificationInterval) {
-            clearInterval(notificationInterval);
-        }
-
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
-
-        if (currentTimeInterval) {
-            clearInterval(currentTimeInterval);
-        }
+        manager.destroy();
     });
 </script>
 
@@ -399,49 +61,34 @@
                     </div>
 
                     <div class="text-center space-y-2">
-                        {#if countdown}
+                        {#if manager.countdownString}
                             <h1
                                 class="text-7xl font-bold text-tertiary-50 tracking-tighter drop-shadow-sm tabular-nums"
                             >
-                                {countdown.split(":")[0]}:{countdown.split(
+                                {manager.countdownString.split(":")[0]}:{manager.countdownString.split(
                                     ":",
                                 )[1]}<span
                                     class="text-tertiary-500 text-4xl font-light ml-0.5"
-                                    >:{countdown.split(":")[2]}</span
+                                    >:{manager.countdownString.split(":")[2]}</span
                                 >
                             </h1>
                             <p
                                 class="text-secondary-300 text-sm font-medium tracking-widest uppercase"
                             >
-                                Remaining until {nextPrayerName ||
-                                    nextDayPrayerName}
+                                Remaining until {manager.nextPrayer?.name}
                             </p>
                         {/if}
                     </div>
 
                     <div class="flex justify-between items-end">
-                        {#if nextPrayerName}
-                            {@const PrayerIcon = getPrayerIcon(nextPrayerName)}
+                        {#if manager.nextPrayer}
+                            {@const PrayerIcon = getPrayerIcon(manager.nextPrayer.name)}
                             <div>
                                 <h2 class="text-3xl font-bold text-tertiary-50">
-                                    {nextPrayerName}
+                                    {manager.nextPrayer.name}
                                 </h2>
                                 <p class="text-secondary-300 font-mono">
-                                    {nextPrayerTime}
-                                </p>
-                            </div>
-                            <div class="card p-4">
-                                <PrayerIcon class="text-tertiary-50 w-8 h-8" />
-                            </div>
-                        {:else}
-                            {@const PrayerIcon =
-                                getPrayerIcon(nextDayPrayerName)}
-                            <div>
-                                <h2 class="text-3xl font-bold text-tertiary-50">
-                                    {nextDayPrayerName}
-                                </h2>
-                                <p class="text-secondary-300 font-mono">
-                                    {nextDayPrayerTime}
+                                    {manager.nextPrayer.time}
                                 </p>
                             </div>
                             <div class="card p-4">
@@ -460,12 +107,12 @@
                 >
                     <div class="flex items-start justify-end">
                         <span class="text-4xl font-light text-tertiary-50">
-                            {currentTime
+                            {manager.currentTime
                                 .getHours()
                                 .toString()
                                 .padStart(2, "0")}<span
                                 class="animate-pulse text-tertiary-50">:</span
-                            >{currentTime
+                            >{manager.currentTime
                                 .getMinutes()
                                 .toString()
                                 .padStart(2, "0")}
@@ -480,10 +127,10 @@
                         <p
                             class="text-tertiary-50 text-lg font-bold leading-tight"
                         >
-                            {getFormattedDate()}
+                            {manager.formattedDate}
                         </p>
                         <p class="text-primary-500 text-sm mt-1 font-medium">
-                            {getIslamicDate()}
+                            {manager.islamicDate}
                         </p>
                     </div>
                 </div>
@@ -506,7 +153,7 @@
                         <p
                             class="text-tertiary-50 font-bold line-clamp-2 text-balance"
                         >
-                            {formattedLocation(selectedLocation.state.label)}
+                            {manager.currentLocationLabel}
                         </p>
                     </div>
                 </div>
@@ -517,8 +164,8 @@
         <div
             class="card h-28 preset-outlined-primary-500 p-2 flex items-center gap-2 overflow-x-auto mb-4"
         >
-            {#each [{ name: "Fajr", time: prayerTimes.fajr, enabled: selectedTimes.state.daily.fajr }, { name: "Sunrise", time: prayerTimes.sunrise, enabled: selectedTimes.state.daily.sunrise }, { name: "Dhuhr", time: prayerTimes.dhuhr, enabled: selectedTimes.state.daily.dhuhr }, { name: "Asr", time: prayerTimes.asr, enabled: selectedTimes.state.daily.asr }, { name: "Maghrib", time: prayerTimes.maghrib, enabled: selectedTimes.state.daily.maghrib }, { name: "Isha", time: prayerTimes.isha, enabled: selectedTimes.state.daily.isha }].filter((p) => p.enabled && p.time) as prayer}
-                {@const isNext = prayer.name === nextPrayerName}
+            {#each manager.enabledPrayers as prayer}
+                {@const isNext = prayer.name === manager.nextPrayer?.name}
                 {@const PrayerIcon = getPrayerIcon(prayer.name)}
 
                 <div
