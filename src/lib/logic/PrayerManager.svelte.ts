@@ -102,6 +102,27 @@ export class PrayerManager {
 
     currentLocationLabel = $derived(formattedLocation(selectedLocation.state.label));
 
+    // --- Qibla Direction ---
+    
+    qiblaDirection = $derived.by(() => {
+        const lat1 = selectedLocation.state.latitude * (Math.PI / 180);
+        const lon1 = selectedLocation.state.longitude * (Math.PI / 180);
+        
+        const MAKKAH_LAT = 21.422487 * (Math.PI / 180);
+        const MAKKAH_LON = 39.826206 * (Math.PI / 180);
+
+        const dLon = MAKKAH_LON - lon1;
+
+        const y = Math.sin(dLon) * Math.cos(MAKKAH_LAT);
+        const x = Math.cos(lat1) * Math.sin(MAKKAH_LAT) -
+                  Math.sin(lat1) * Math.cos(MAKKAH_LAT) * Math.cos(dLon);
+
+        let bearing = Math.atan2(y, x);
+        bearing = bearing * (180 / Math.PI);
+        
+        return (bearing + 360) % 360;
+    });
+
     // --- Derived State: Prayer Calculations ---
 
     private prayTimeInstance = $derived.by(() => {
