@@ -75,12 +75,12 @@
         <div class="flex items-center gap-4">
              <button
                 type="button"
-                class="btn-icon preset-tonal-tertiary"
-                title="Home"
-                aria-label="Home"
+                class="btn-icon hover:preset-tonal-primary"
+                title="Back"
+                aria-label="Back"
                 onclick={() => goto("/")}
             >
-                <Home size={20} />
+                <ChevronLeft size={24} />
             </button>
             <h2 class="h2 font-bold text-surface-900 dark:text-surface-50">Prayer Calendar</h2>
         </div>
