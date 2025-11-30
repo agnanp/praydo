@@ -28,6 +28,50 @@ export class PrayerManager {
         if (this.intervalId) clearInterval(this.intervalId);
     }
 
+    // --- Calendar Logic ---
+
+    getMonthSchedule(year: number, month: number): Array<{ day: number; prayers: PrayerTimes }> {
+        const schedule = [];
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const pt = this.createPrayTimeInstance();
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const times = pt.getTimes(date) as unknown as PrayerTimes;
+            schedule.push({ day, prayers: times });
+        }
+        return schedule;
+    }
+
+    private createPrayTimeInstance(): PrayTime {
+        let pt: PrayTime;
+        if (calculationSettings.state.method === "custom") {
+            pt = new PrayTime();
+            pt.adjust({
+                fajr: calculationSettings.state.fajrAngle,
+                maghrib: calculationSettings.state.maghrib,
+                isha: calculationSettings.state.isha,
+                midnight: calculationSettings.state.midnight,
+            });
+        } else {
+            pt = new PrayTime(calculationSettings.state.method);
+        }
+
+        pt.location([
+            selectedLocation.state.latitude,
+            selectedLocation.state.longitude,
+        ]);
+
+        pt.format(selectedTimes.state.format);
+        pt.adjust({
+            dhuhr: calculationSettings.state.dhuhrMinutes,
+            asr: calculationSettings.state.asrMethod,
+            highLats: calculationSettings.state.highLatitudes,
+        });
+
+        return pt;
+    }
+
     // --- Derived State: Date & Time ---
 
     formattedDate = $derived.by(() => {
@@ -61,35 +105,7 @@ export class PrayerManager {
     // --- Derived State: Prayer Calculations ---
 
     private prayTimeInstance = $derived.by(() => {
-        // Re-create/configure PrayTime whenever settings change
-        let pt: PrayTime;
-        
-        if (calculationSettings.state.method === "custom") {
-            pt = new PrayTime();
-            pt.adjust({
-                fajr: calculationSettings.state.fajrAngle,
-                maghrib: calculationSettings.state.maghrib,
-                isha: calculationSettings.state.isha,
-                midnight: calculationSettings.state.midnight,
-            });
-        } else {
-            pt = new PrayTime(calculationSettings.state.method);
-        }
-
-        pt.location([
-            selectedLocation.state.latitude,
-            selectedLocation.state.longitude,
-        ]);
-        
-        // Apply common settings
-        pt.format(selectedTimes.state.format);
-        pt.adjust({
-            dhuhr: calculationSettings.state.dhuhrMinutes,
-            asr: calculationSettings.state.asrMethod,
-            highLats: calculationSettings.state.highLatitudes,
-        });
-
-        return pt;
+        return this.createPrayTimeInstance();
     });
 
     todaysPrayerTimes = $derived.by(() => {

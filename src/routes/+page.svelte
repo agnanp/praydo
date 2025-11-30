@@ -8,6 +8,7 @@
         Moon,
         Circle,
         Settings,
+        CalendarDays,
     } from "@lucide/svelte";
     import { goto } from "$app/navigation";
     import { modeLightSwitch } from "$lib/store/modeLightSwitch";
@@ -207,11 +208,20 @@
             {/each}
         </div>
 
-        <!-- Settings Button (bottom right corner) -->
-        <div>
+        <!-- Action Buttons (bottom right corner) -->
+        <div class="absolute bottom-4 right-6 flex gap-2">
             <button
                 type="button"
-                class="btn-icon preset-tonal-tertiary absolute bottom-4 right-6"
+                class="btn-icon preset-tonal-tertiary"
+                title="Calendar"
+                aria-label="Calendar"
+                onclick={() => goto("calendar")}
+            >
+                <CalendarDays size={20} />
+            </button>
+            <button
+                type="button"
+                class="btn-icon preset-tonal-tertiary"
                 title="Settings"
                 aria-label="Settings"
                 onclick={() => goto("settings")}
