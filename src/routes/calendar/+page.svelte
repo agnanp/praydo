@@ -107,20 +107,20 @@
     </div>
 
     <!-- Table Container -->
-    <div class="table-container flex-1 border border-surface-500/20 bg-surface-50-950 rounded-lg overflow-hidden shadow-sm">
+    <div class="table-container flex-1 border border-surface-500/20 bg-surface-50-950 rounded-lg overflow-hidden shadow-sm overflow-y-auto">
         <table class="table table-hover w-full">
             <thead class="bg-surface-200-800 text-surface-900 dark:text-surface-50 sticky top-0 z-10">
                 <tr>
                     {#each columns as col}
-                        <th class="text-center p-4 font-bold uppercase text-xs tracking-wider">{col.label}</th>
+                        <th class="text-center p-4 font-bold uppercase text-xs tracking-wider bg-surface-200 dark:bg-surface-800">{col.label}</th>
                     {/each}
                 </tr>
             </thead>
-            <tbody class="overflow-y-auto">
+            <tbody>
                 {#each schedule as row}
                     <tr class="border-b border-surface-500/10 {isToday(row.day) ? 'bg-primary-500/10' : ''}">
                         {#each columns as col}
-                            <td class="text-center p-3 font-mono text-sm {isToday(row.day) ? 'font-bold text-primary-600 dark:text-primary-400' : 'text-surface-600 dark:text-surface-400'}">
+                            <td class="text-center p-3 font-mono text-sm {isToday(row.day) ? 'font-bold text-primary-700 dark:text-primary-400' : 'text-surface-900 dark:text-surface-200'}">
                                 {#if col.key === 'date'}
                                     <span class="inline-block w-8 h-8 leading-8 rounded-full {isToday(row.day) ? 'bg-primary-500 text-white' : ''}">
                                         {row.day}
