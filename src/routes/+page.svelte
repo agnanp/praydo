@@ -161,73 +161,76 @@
             </div>
         </div>
 
-        <!-- Bottom Section: Horizontal Timeline -->
-        <div
-            class="card h-28 preset-outlined-primary-500 p-2 flex items-center gap-2 overflow-x-auto mb-4"
-        >
-            {#each manager.enabledPrayers as prayer}
-                {@const isNext = prayer.name === manager.nextPrayer?.name}
-                {@const PrayerIcon = getPrayerIcon(prayer.name)}
+        <!-- Bottom Section: Timeline + Actions -->
+        <div class="flex gap-4 items-end h-28">
+            <!-- Horizontal Timeline -->
+            <div
+                class="card h-full flex-1 preset-outlined-primary-500 p-2 flex items-center gap-2 overflow-x-auto"
+            >
+                {#each manager.enabledPrayers as prayer}
+                    {@const isNext = prayer.name === manager.nextPrayer?.name}
+                    {@const PrayerIcon = getPrayerIcon(prayer.name)}
 
-                <div
-                    class="badge relative flex-1 min-w-[120px] h-full flex-col items-center justify-center gap-2 transition-all duration-300 {isNext
-                        ? 'preset-filled-primary-500'
-                        : 'preset-tonal-surface text-primary-500'}"
-                >
-                    {#if isNext}
-                        <div class="absolute top-2 right-2">
-                            <Circle
-                                size={10}
-                                class="text-tertiary-500 fill-tertiary-500 animate-pulse"
-                            />
+                    <div
+                        class="badge relative flex-1 min-w-[120px] h-full flex-col items-center justify-center gap-2 transition-all duration-300 {isNext
+                            ? 'preset-filled-primary-500'
+                            : 'preset-tonal-surface text-primary-500'}"
+                    >
+                        {#if isNext}
+                            <div class="absolute top-2 right-2">
+                                <Circle
+                                    size={10}
+                                    class="text-tertiary-500 fill-tertiary-500 animate-pulse"
+                                />
+                            </div>
+                        {/if}
+
+                        <PrayerIcon
+                            size={18}
+                            class={isNext ? "text-tertiary-50" : ""}
+                        />
+
+                        <div class="text-center">
+                            <span
+                                class="text-xs font-bold uppercase tracking-wider block {isNext
+                                    ? 'opacity-100 text-tertiary-50'
+                                    : 'opacity-70'}"
+                            >
+                                {prayer.name}
+                            </span>
+                            <span
+                                class="text-lg font-mono {isNext
+                                    ? 'font-bold text-secondary-300'
+                                    : 'font-medium'}"
+                            >
+                                {prayer.time}
+                            </span>
                         </div>
-                    {/if}
-
-                    <PrayerIcon
-                        size={18}
-                        class={isNext ? "text-tertiary-50" : ""}
-                    />
-
-                    <div class="text-center">
-                        <span
-                            class="text-xs font-bold uppercase tracking-wider block {isNext
-                                ? 'opacity-100 text-tertiary-50'
-                                : 'opacity-70'}"
-                        >
-                            {prayer.name}
-                        </span>
-                        <span
-                            class="text-lg font-mono {isNext
-                                ? 'font-bold text-secondary-300'
-                                : 'font-medium'}"
-                        >
-                            {prayer.time}
-                        </span>
                     </div>
-                </div>
-            {/each}
-        </div>
+                {/each}
+            </div>
 
-        <!-- Action Buttons (bottom right corner) -->
-        <div class="absolute bottom-4 right-6 flex gap-2">
-            <button
-                type="button"
-                class="btn-icon preset-tonal-tertiary"
-                title="Calendar"
-                aria-label="Calendar"
-                onclick={() => goto("calendar")}
-            >
-                <CalendarDays size={20} />
-            </button>
-            <button
-                type="button"
-                class="btn-icon preset-tonal-tertiary"
-                title="Settings"
-                aria-label="Settings"
-                onclick={() => goto("settings")}
-            >
-                <Settings size={20} />
-            </button>
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-2 justify-end pb-1">
+                <button
+                    type="button"
+                    class="btn-icon preset-tonal-tertiary"
+                    title="Calendar"
+                    aria-label="Calendar"
+                    onclick={() => goto("calendar")}
+                >
+                    <CalendarDays size={20} />
+                </button>
+                <button
+                    type="button"
+                    class="btn-icon preset-tonal-tertiary"
+                    title="Settings"
+                    aria-label="Settings"
+                    onclick={() => goto("settings")}
+                >
+                    <Settings size={20} />
+                </button>
+            </div>
         </div>
     </div>
 </div>
