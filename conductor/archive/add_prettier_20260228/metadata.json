@@ -1,0 +1,8 @@
+{
+  "track_id": "add_prettier_20260228",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-02-28T13:40:00Z",
+  "updated_at": "2026-02-28T13:40:00Z",
+  "description": "add prettier for this codebase, just focus on front end, ignore the rust backend"
+}
