@@ -21,6 +21,7 @@ Praydo is a modern, cross-platform (Windows and Linux) desktop application desig
 
 ## 4. Key Features
 
+- **Onboarding Wizard:** A mandatory initial setup flow for new users to configure their location, calculation method, and notification preferences.
 - **Prayer Times & Countdown:** Real-time display of daily prayer times and a countdown timer to the next prayer.
 - **Regional Customization:** Support for various calculation methods and notification settings tailored to different geographic regions.
 - **Seamless Background Operation:** Functionality including automatic startup and minimization to the system tray for uninterrupted use.
