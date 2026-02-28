@@ -74,18 +74,17 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![send_native_notification])
-        .on_window_event(|window, event| match event {
-            tauri::WindowEvent::CloseRequested { api, .. } => {
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();
                 navigate_to_main(window.app_handle().clone());
                 let _ = window.hide();
                 let _ = send_native_notification(
                     window.app_handle().clone(),
                     "Praydo Running in the Background".to_string(),
-                    "Click the tray icon to restore.".to_string()
+                    "Click the tray icon to restore.".to_string(),
                 );
             }
-            _ => {}
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
