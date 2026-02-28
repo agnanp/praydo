@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, getContext } from 'svelte';
   import { goto } from '$app/navigation';
   import { ChevronLeft, ChevronRight, Home } from '@lucide/svelte';
-  import { PrayerManager } from '$lib/logic/PrayerManager.svelte';
+  import type { PrayerManager } from '$lib/logic/PrayerManager.svelte';
   import { selectedTimes } from '$lib/store/selectedTimes';
   import type { PrayerTimes } from '$lib/logic/types';
 
-  const manager = new PrayerManager();
+  const manager = getContext('prayerManager') as PrayerManager;
   const now = new Date();
 
   let currentYear = $state(now.getFullYear());
@@ -82,8 +82,7 @@
   ].filter((c) => c.key === 'date' || c.enabled);
 
   onMount(() => {
-    // Cleanup manager on unmount
-    return () => manager.destroy();
+    //
   });
 </script>
 

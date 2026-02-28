@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount, getContext } from 'svelte';
   import {
     MapPin,
     Sunrise,
@@ -12,10 +12,10 @@
   } from '@lucide/svelte';
   import { goto } from '$app/navigation';
   import { modeLightSwitch } from '$lib/store/modeLightSwitch';
-  import { PrayerManager } from '$lib/logic/PrayerManager.svelte';
+  import type { PrayerManager } from '$lib/logic/PrayerManager.svelte';
   import QiblaCompass from '$lib/components/QiblaCompass.svelte';
 
-  const manager = new PrayerManager();
+  const manager = getContext('prayerManager') as PrayerManager;
 
   // Helper function to get icon for each prayer
   function getPrayerIcon(prayerName: string) {
@@ -42,10 +42,6 @@
       'data-mode',
       modeLightSwitch.state.mode
     );
-  });
-
-  onDestroy(() => {
-    manager.destroy();
   });
 </script>
 
