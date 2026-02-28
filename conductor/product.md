@@ -5,7 +5,7 @@ Praydo - Muslim Prayer Times Desktop Application
 # Product Guide: Praydo
 
 ## 1. Product Vision
-Praydo is a modern, cross-platform desktop application designed to provide accurate and accessible Muslim prayer times. It focuses on a distraction-free experience that integrates seamlessly with the user's desktop environment while ensuring high precision and regional customization.
+Praydo is a modern, cross-platform (Windows and Linux) desktop application designed to provide accurate and accessible Muslim prayer times. It focuses on a distraction-free experience that integrates seamlessly with the user's desktop environment while ensuring high precision and regional customization.
 
 ## 2. Target Audience
 *   **General Users:** Muslim individuals who need a reliable and simple desktop application for daily prayer schedules.
@@ -14,7 +14,7 @@ Praydo is a modern, cross-platform desktop application designed to provide accur
 ## 3. Core Goals
 *   **Accuracy & Precision:** Provide highly accurate prayer times using multiple calculation methods and regional adjustments.
 *   **System Integration:** Offer a seamless, distraction-free desktop experience through system tray integration and native notifications.
-*   **Portability & Efficiency:** Ensure the application is lightweight, cross-platform (Windows, macOS, Linux), and efficient in its resource usage.
+*   **Portability & Efficiency:** Ensure the application is lightweight, cross-platform (Windows and Linux), and efficient in its resource usage.
 
 ## 4. Key Features
 *   **Prayer Times & Countdown:** Real-time display of daily prayer times and a countdown timer to the next prayer.
