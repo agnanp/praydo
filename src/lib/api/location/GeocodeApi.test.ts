@@ -10,7 +10,8 @@ describe('GeocodeApi', () => {
   it('should return data when fetch is successful', async () => {
     const mockResponse = {
       ok: true,
-      json: () => Promise.resolve([{ lat: '1.23', lon: '4.56', display_name: 'Test' }]),
+      json: () =>
+        Promise.resolve([{ lat: '1.23', lon: '4.56', display_name: 'Test' }]),
     };
     vi.mocked(fetch).mockResolvedValue(mockResponse as any);
 

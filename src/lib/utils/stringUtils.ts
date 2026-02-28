@@ -1,9 +1,9 @@
 export function formattedLocation(str: string): string {
-  if (!str) return "";
+  if (!str) return '';
   const result = str
     .split(',')
     .slice(0, 2)
-    .map(part => part.trim())
+    .map((part) => part.trim())
     .join(', ');
 
   return result.replace(

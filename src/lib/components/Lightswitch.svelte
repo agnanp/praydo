@@ -17,4 +17,9 @@
   };
 </script>
 
-<Switch controlActive='preset-tonal-primary' controlInactive='bg-secondary-50' {checked} {onCheckedChange} />
+<Switch
+  controlActive="preset-tonal-primary"
+  controlInactive="bg-secondary-50"
+  {checked}
+  {onCheckedChange}
+/>

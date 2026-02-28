@@ -259,7 +259,7 @@ class PrayTime {
 
   // get prayer times
   times(
-    date: number | Date | [number, number, number] = 0,
+    date: number | Date | [number, number, number] = 0
   ): Record<string, string> {
     if (typeof date === 'number')
       date = new Date(date < 1000 ? Date.now() + date * 864e5 : date);
@@ -310,7 +310,7 @@ class PrayTime {
     location?: [number, number],
     timezone: string | number = 'auto',
     dst: number = 0,
-    format: TimeFormat = '24h',
+    format: TimeFormat = '24h'
   ): Record<string, string> {
     if (!location) return this.times(date);
     const offset =
@@ -445,7 +445,7 @@ class PrayTime {
     const e = 23.439 - 0.00000036 * D;
     const RA = this.mod(
       this.arctan2(this.cos(e) * this.sin(L), this.cos(L)) / 15,
-      24,
+      24
     );
 
     const sunPos = {
@@ -469,7 +469,7 @@ class PrayTime {
   private angleTime(
     angle: number | string,
     time: number,
-    direction: number = 1,
+    direction: number = 1
   ): number {
     const lat = this.settings.location[0];
     const decl = this.sunPosition(time).declination;
@@ -504,14 +504,14 @@ class PrayTime {
         times.sunrise,
         params.fajr || 0,
         night,
-        -1,
+        -1
       ),
       isha: this.adjustTime(times.isha, times.sunset, params.isha || 0, night),
       maghrib: this.adjustTime(
         times.maghrib,
         times.sunset,
         params.maghrib || 0,
-        night,
+        night
       ),
     });
   }
@@ -522,7 +522,7 @@ class PrayTime {
     base: number,
     angle: number | string,
     night: number,
-    direction: number = 1,
+    direction: number = 1
   ): number {
     const factors: Record<HighLatitudeMethod, number> = {
       NightMiddle: 1 / 2,
@@ -563,7 +563,7 @@ class PrayTime {
   private timeToString(timestamp: number, format: TimeFormat): string {
     const utcOffset = this.settings.utcOffset;
     const date = new Date(
-      timestamp + (utcOffset === 'auto' ? 0 : (utcOffset as number)) * 6e4,
+      timestamp + (utcOffset === 'auto' ? 0 : (utcOffset as number)) * 6e4
     );
     const str = date.toLocaleTimeString('en-US', {
       timeZone: this.settings.timezone,

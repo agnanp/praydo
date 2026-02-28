@@ -29,6 +29,7 @@ git push origin v0.4.3
 ```
 
 The workflow will automatically:
+
 - Build the app for all platforms
 - Create a draft GitHub release
 - Upload all installers as release assets
@@ -36,6 +37,7 @@ The workflow will automatically:
 #### 2. Manual Trigger
 
 You can also manually trigger the workflow from GitHub:
+
 1. Go to your repository on GitHub
 2. Click on "Actions" tab
 3. Select "Release" workflow
@@ -53,14 +55,16 @@ For each platform, the workflow generates:
 ### Release Settings
 
 The workflow creates a **draft release** by default. This means:
+
 - The release won't be published immediately
 - You can review the release notes and assets
 - You can edit the release description before publishing
 - You manually publish the release when ready
 
 To change this behavior, edit `.github/workflows/release.yml`:
+
 ```yaml
-releaseDraft: false  # Change to false to auto-publish
+releaseDraft: false # Change to false to auto-publish
 ```
 
 ### Repository Permissions
@@ -76,6 +80,7 @@ The workflow needs write permissions to create releases. This should be enabled 
 ### Version Synchronization
 
 **Important**: Keep these version numbers in sync:
+
 - `package.json` → `version: "0.4.3"`
 - `src-tauri/tauri.conf.json` → `version: "0.4.3"`
 - `src-tauri/Cargo.toml` → `version = "0.4.3"`
@@ -85,6 +90,7 @@ The tag should match: `v0.4.3`
 ### Environment Variables
 
 The workflow uses these environment variables:
+
 - `GITHUB_TOKEN`: Automatically provided by GitHub Actions (no setup needed)
 
 Note: The OpenStreetMap geocoding URL is hardcoded in the application and does not require environment variable configuration.
@@ -94,7 +100,9 @@ Note: The OpenStreetMap geocoding URL is hardcoded in the application and does n
 For production releases, you may want to add code signing:
 
 #### macOS
+
 Add these secrets to your repository:
+
 - `APPLE_CERTIFICATE`: Base64-encoded signing certificate
 - `APPLE_CERTIFICATE_PASSWORD`: Certificate password
 - `APPLE_SIGNING_IDENTITY`: Signing identity name
@@ -103,7 +111,9 @@ Add these secrets to your repository:
 - `APPLE_TEAM_ID`: Your team ID
 
 #### Windows
+
 Add these secrets:
+
 - `TAURI_SIGNING_PRIVATE_KEY`: Your private key
 - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`: Key password
 
@@ -112,14 +122,17 @@ Then update the workflow to include signing configuration.
 ### Troubleshooting
 
 **Build fails on Ubuntu**
+
 - Ensure all required system dependencies are installed in the workflow
 - Current dependencies: `libwebkit2gtk-4.1-dev`, `libappindicator3-dev`, `librsvg2-dev`, `patchelf`
 
 **Release not created**
+
 - Check repository permissions (see "Repository Permissions" above)
 - Verify `GITHUB_TOKEN` has write access
 
 **Version mismatch**
+
 - Ensure all version fields match across `package.json`, `tauri.conf.json`, and `Cargo.toml`
 - Tag should match with `v` prefix (e.g., `v0.4.3`)
 
@@ -128,11 +141,12 @@ Then update the workflow to include signing configuration.
 To customize the workflow:
 
 **Change trigger method**: Edit the `on:` section
+
 ```yaml
 on:
   push:
     branches:
-      - release  # Trigger on push to release branch instead
+      - release # Trigger on push to release branch instead
 ```
 
 **Modify release notes**: Edit the `releaseBody` field

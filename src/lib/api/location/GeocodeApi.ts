@@ -1,4 +1,4 @@
-import { fetch } from "@tauri-apps/plugin-http";
+import { fetch } from '@tauri-apps/plugin-http';
 
 const GEOCODE_BASE_URL = 'https://nominatim.openstreetmap.org/search';
 

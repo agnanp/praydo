@@ -1,4 +1,4 @@
-import { RuneStore } from "@tauri-store/svelte";
+import { RuneStore } from '@tauri-store/svelte';
 
 interface Times {
   fajr: boolean;
@@ -9,14 +9,12 @@ interface Times {
   isha: boolean;
 }
 
-
-
 export type TimeFormat =
-  | "24h"
-  | "12h"
-  | "12H"
-  | "x"
-  | "X"
+  | '24h'
+  | '12h'
+  | '12H'
+  | 'x'
+  | 'X'
   | ((timestamp: number) => string);
 
 interface SelectedTimes {
@@ -34,13 +32,12 @@ const times: SelectedTimes = {
     maghrib: true,
     isha: true,
   },
-  format: "24h",
+  format: '24h',
 };
 
-export const selectedTimes = new RuneStore('times', times, 
-                                                    {
-                                              saveOnChange: true,
-                                              saveStrategy: 'debounce',
-                                              saveInterval: 1000,
-                                              autoStart: true,
-                                            });
+export const selectedTimes = new RuneStore('times', times, {
+  saveOnChange: true,
+  saveStrategy: 'debounce',
+  saveInterval: 1000,
+  autoStart: true,
+});

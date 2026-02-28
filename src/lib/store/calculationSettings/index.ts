@@ -1,19 +1,20 @@
-import { RuneStore } from "@tauri-store/svelte";
+import { RuneStore } from '@tauri-store/svelte';
 
 export interface CalculationSettings {
-  method:"MWL"
-  | "ISNA"
-  | "Egypt"
-  | "Makkah"
-  | "Karachi"
-  | "Tehran"
-  | "Jafari"
-  | "France"
-  | "Russia"
-  | "Singapore"
-  | "NU"
-  | "MU"
-  | "custom";
+  method:
+    | 'MWL'
+    | 'ISNA'
+    | 'Egypt'
+    | 'Makkah'
+    | 'Karachi'
+    | 'Tehran'
+    | 'Jafari'
+    | 'France'
+    | 'Russia'
+    | 'Singapore'
+    | 'NU'
+    | 'MU'
+    | 'custom';
   fajrAngle: number;
   dhuhrMinutes: string;
   asrMethod: 'Standard' | 'Hanafi';
@@ -36,15 +37,19 @@ export const defaultCalculationSettings: CalculationSettings = {
   isha: 18,
   ishaMode: 'degrees',
   midnight: 'Standard',
-  highLatitudes: 'NightMiddle'
+  highLatitudes: 'NightMiddle',
 };
 
-export const calculationSettings = new RuneStore('calculationSettings', defaultCalculationSettings, {
-  saveOnChange: true,
-  saveStrategy: 'debounce',
-  saveInterval: 1000,
-  autoStart: true,
-});
+export const calculationSettings = new RuneStore(
+  'calculationSettings',
+  defaultCalculationSettings,
+  {
+    saveOnChange: true,
+    saveStrategy: 'debounce',
+    saveInterval: 1000,
+    autoStart: true,
+  }
+);
 
 export const calculationMethods = [
   { value: 'MWL', label: 'Muslim World League' },
@@ -59,22 +64,22 @@ export const calculationMethods = [
   { value: 'Singapore', label: 'Islamic Religious Council of Singapore ' },
   { value: 'NU', label: 'Lembaga Falakiyah NU, Indonesia' },
   { value: 'MU', label: 'Muhammadiyah, Indonesia' },
-  { value: 'custom', label: 'Custom' }
+  { value: 'custom', label: 'Custom' },
 ];
 
 export const asrMethods = [
   { value: 'Standard', label: 'Standard (Shafii, Maliki, Jafari, Hanbali)' },
-  { value: 'Hanafi', label: 'Hanafi' }
+  { value: 'Hanafi', label: 'Hanafi' },
 ];
 
 export const midnightMethods = [
   { value: 'Standard', label: 'Standard (mean time from Sunset to Sunrise)' },
-  { value: 'Jafari', label: 'Jafari (mean time from Maghrib to Fajr)' }
+  { value: 'Jafari', label: 'Jafari (mean time from Maghrib to Fajr)' },
 ];
 
 export const highLatitudeMethods = [
   { value: 'NightMiddle', label: 'Middle of the Night' },
   { value: 'OneSeventh', label: 'One Seventh' },
   { value: 'AngleBased', label: 'Angle-Based' },
-  { value: 'None', label: 'None' }
+  { value: 'None', label: 'None' },
 ];
