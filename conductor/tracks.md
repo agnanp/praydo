@@ -1,2 +1,8 @@
-# Project Tracks\n\nThis file tracks all major tracks for the project. Each track has its own detailed plan in its respective folder.\n\n---\n\n- [x] **Track: Perform a comprehensive code review of the existing codebase**\n  *Link: [./tracks/code_review_20260228/](./tracks/code_review_20260228/)*
-\n---\n\n- [x] **Track: Improve Codebase based on Code Review Findings**\n  *Link: [./tracks/improve_codebase_20260228/](./tracks/improve_codebase_20260228/)*
+# Project Tracks
+
+This file tracks all major tracks for the project. Each track has its own detailed plan in its respective folder.
+
+---
+
+- [x] **Track: Perform a comprehensive code review of the existing codebase**
+  *Link: [./tracks/code_review_20260228/](./tracks/code_review_20260228/)*
