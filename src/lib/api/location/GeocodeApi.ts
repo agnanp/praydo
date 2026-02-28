@@ -1,6 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 
-const GEOCODE_BASE_URL = "https://nominatim.openstreetmap.org/search";
+const GEOCODE_BASE_URL = 'https://nominatim.openstreetmap.org/search';
 
 export const geocode = async (place: string) => {
   const url = GEOCODE_BASE_URL;
