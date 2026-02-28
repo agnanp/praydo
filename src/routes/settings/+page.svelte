@@ -140,28 +140,17 @@
 
   function handleInputMaghribChange(e: Event) {
     const target = e.target as HTMLInputElement;
-    if (calculationSettings.state.maghribMode === 'minutes') {
-      calculationSettings.state.maghrib = `${target.value} min`;
-    } else {
-      calculationSettings.state.maghrib = String(target.value).replace(
-        /\D/g,
-        ''
-      );
-    }
+    calculationSettings.state.maghrib = Number(target.value);
   }
 
   function handleInputIshaChange(e: Event) {
     const target = e.target as HTMLInputElement;
-    if (calculationSettings.state.ishaMode === 'minutes') {
-      calculationSettings.state.isha = `${target.value} min`;
-    } else {
-      calculationSettings.state.isha = String(target.value).replace(/\D/g, '');
-    }
+    calculationSettings.state.isha = Number(target.value);
   }
 
   function handleInputDhuhrChange(e: Event) {
     const target = e.target as HTMLInputElement;
-    calculationSettings.state.dhuhrMinutes = `${target.value} min`;
+    calculationSettings.state.dhuhrMinutes = Number(target.value);
   }
 
   onMount(() => {
@@ -306,10 +295,7 @@
                   <input
                     class="ig-input"
                     type="number"
-                    value={String(calculationSettings.state.maghrib).replace(
-                      /\D/g,
-                      ''
-                    )}
+                    value={calculationSettings.state.maghrib}
                     onchange={handleInputMaghribChange}
                     placeholder={maghribPlaceholder}
                   />
@@ -328,10 +314,7 @@
                   <input
                     class="ig-input"
                     type="number"
-                    value={String(calculationSettings.state.isha).replace(
-                      /\D/g,
-                      ''
-                    )}
+                    value={calculationSettings.state.isha}
                     onchange={handleInputIshaChange}
                     placeholder={ishaPlaceholder}
                   />
@@ -362,10 +345,7 @@
                 <input
                   class="ig-input"
                   type="number"
-                  value={String(calculationSettings.state.dhuhrMinutes).replace(
-                    /\D/g,
-                    ''
-                  )}
+                  value={calculationSettings.state.dhuhrMinutes}
                   onchange={handleInputDhuhrChange}
                   placeholder="Enter the value of minutes after mid-day"
                 />

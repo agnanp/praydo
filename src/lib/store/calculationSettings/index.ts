@@ -16,11 +16,11 @@ export interface CalculationSettings {
     | 'MU'
     | 'custom';
   fajrAngle: number;
-  dhuhrMinutes: string;
+  dhuhrMinutes: number;
   asrMethod: 'Standard' | 'Hanafi';
-  maghrib: number | string; // angle or minutes
+  maghrib: number; // angle or minutes
   maghribMode: 'degrees' | 'minutes';
-  isha: number | string; // angle or minutes
+  isha: number; // angle or minutes
   ishaMode: 'degrees' | 'minutes';
   midnight: 'Standard' | 'Jafari';
   highLatitudes: 'NightMiddle' | 'OneSeventh' | 'AngleBased' | 'None';
@@ -30,9 +30,9 @@ export interface CalculationSettings {
 export const defaultCalculationSettings: CalculationSettings = {
   method: 'NU',
   fajrAngle: 20,
-  dhuhrMinutes: '1 min',
+  dhuhrMinutes: 1,
   asrMethod: 'Standard',
-  maghrib: '1 min',
+  maghrib: 1,
   maghribMode: 'minutes',
   isha: 18,
   ishaMode: 'degrees',

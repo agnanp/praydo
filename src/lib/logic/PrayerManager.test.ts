@@ -17,7 +17,7 @@ vi.mock('$lib/store/calculationSettings', () => ({
   calculationSettings: {
     state: {
       method: 'NU',
-      dhuhrMinutes: '0 min',
+      dhuhrMinutes: 0,
       asrMethod: 'Standard',
       highLatitudes: 'NightMiddle',
     },

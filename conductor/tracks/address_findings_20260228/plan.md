@@ -1,16 +1,16 @@
 # Implementation Plan: Address Remaining Code Review Findings
 
 ## Phase 1: Frontend Refactoring and Type Safety
-- [ ] Task: Extract Qibla Logic
-    - [ ] Create `src/lib/utils/qibla.test.ts` with test cases for bearing calculation.
-    - [ ] Create `src/lib/utils/qibla.ts` and implement the bearing calculation logic.
-    - [ ] Update `src/lib/logic/PrayerManager.svelte.ts` to use the new utility.
-- [ ] Task: Refine Store Interfaces
-    - [ ] Update all files in `src/lib/store/` to remove `[key: string]: any` and use specific types.
-    - [ ] Verify `pnpm check` passes after type refinements.
-- [ ] Task: Standardize Settings Types
-    - [ ] Update `CalculationSettings` interface and store to use numeric types for durations and angles.
-    - [ ] Update UI components and logic to handle numeric settings directly without string parsing.
+- [x] Task: Extract Qibla Logic
+    - [x] Create `src/lib/utils/qibla.test.ts` with test cases for bearing calculation.
+    - [x] Create `src/lib/utils/qibla.ts` and implement the bearing calculation logic.
+    - [x] Update `src/lib/logic/PrayerManager.svelte.ts` to use the new utility.
+- [x] Task: Refine Store Interfaces
+    - [x] Update all files in `src/lib/store/` to remove `[key: string]: any` and use specific types.
+    - [x] Verify `pnpm check` passes after type refinements.
+- [x] Task: Standardize Settings Types
+    - [x] Update `CalculationSettings` interface and store to use numeric types for durations and angles.
+    - [x] Update UI components and logic to handle numeric settings directly without string parsing.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Frontend Refactoring and Type Safety' (Protocol in workflow.md)
 
 ## Phase 2: Logic and Backend Improvements

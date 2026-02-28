@@ -12,6 +12,7 @@ import {
 import { playSound } from '$lib/sound';
 import { gregorianToHijri } from '@tabby_ai/hijri-converter';
 import { formattedLocation } from '$lib/utils/stringUtils';
+import { calculateQiblaBearing } from '$lib/utils/qibla';
 import type { PrayerName, PrayerTimes } from './types';
 
 export class PrayerManager {
@@ -53,18 +54,10 @@ export class PrayerManager {
   }
 
   private createPrayTimeInstance(): PrayTime {
-    let pt: PrayTime;
-    if (calculationSettings.state.method === 'custom') {
-      pt = new PrayTime();
-      pt.adjust({
-        fajr: calculationSettings.state.fajrAngle,
-        maghrib: calculationSettings.state.maghrib,
-        isha: calculationSettings.state.isha,
-        midnight: calculationSettings.state.midnight,
-      });
-    } else {
-      pt = new PrayTime(calculationSettings.state.method);
-    }
+    const pt =
+      calculationSettings.state.method === 'custom'
+        ? new PrayTime()
+        : new PrayTime(calculationSettings.state.method);
 
     pt.location([
       selectedLocation.state.latitude,
@@ -72,11 +65,27 @@ export class PrayerManager {
     ]);
 
     pt.format(selectedTimes.state.format);
-    pt.adjust({
-      dhuhr: calculationSettings.state.dhuhrMinutes,
+
+    const adjustments: any = {
+      dhuhr: `${calculationSettings.state.dhuhrMinutes} min`,
       asr: calculationSettings.state.asrMethod,
       highLats: calculationSettings.state.highLatitudes,
-    });
+      maghrib:
+        calculationSettings.state.maghribMode === 'minutes'
+          ? `${calculationSettings.state.maghrib} min`
+          : calculationSettings.state.maghrib,
+      isha:
+        calculationSettings.state.ishaMode === 'minutes'
+          ? `${calculationSettings.state.isha} min`
+          : calculationSettings.state.isha,
+    };
+
+    if (calculationSettings.state.method === 'custom') {
+      adjustments.fajr = calculationSettings.state.fajrAngle;
+      adjustments.midnight = calculationSettings.state.midnight;
+    }
+
+    pt.adjust(adjustments);
 
     return pt;
   }
@@ -125,23 +134,10 @@ export class PrayerManager {
   // --- Qibla Direction ---
 
   qiblaDirection = $derived.by(() => {
-    const lat1 = selectedLocation.state.latitude * (Math.PI / 180);
-    const lon1 = selectedLocation.state.longitude * (Math.PI / 180);
-
-    const MAKKAH_LAT = 21.422487 * (Math.PI / 180);
-    const MAKKAH_LON = 39.826206 * (Math.PI / 180);
-
-    const dLon = MAKKAH_LON - lon1;
-
-    const y = Math.sin(dLon) * Math.cos(MAKKAH_LAT);
-    const x =
-      Math.cos(lat1) * Math.sin(MAKKAH_LAT) -
-      Math.sin(lat1) * Math.cos(MAKKAH_LAT) * Math.cos(dLon);
-
-    let bearing = Math.atan2(y, x);
-    bearing = bearing * (180 / Math.PI);
-
-    return (bearing + 360) % 360;
+    return calculateQiblaBearing(
+      selectedLocation.state.latitude,
+      selectedLocation.state.longitude
+    );
   });
 
   // --- Derived State: Prayer Calculations ---
