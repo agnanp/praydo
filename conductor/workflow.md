@@ -32,22 +32,27 @@ All tasks follow a strict lifecycle:
    - With the safety of passing tests, refactor the implementation code and the test code to improve clarity, remove duplication, and enhance performance without changing the external behavior.
    - Rerun tests to ensure they still pass after refactoring.
 
-6. **Verify Coverage:** Run coverage reports using the project's chosen tools.
+6. **Rust Linting (if applicable):**
+   - If the task involved modifications to Rust code, run `cargo clippy` from the `src-tauri` directory.
+   - **CRITICAL:** Analyze the output and fix all warnings and errors reported by clippy.
+   - Rerun `cargo clippy` to ensure all issues are resolved.
+
+7. **Verify Coverage:** Run coverage reports using the project's chosen tools.
    Target: >60% coverage for new code. The specific tools and commands will vary by language and framework.
 
-7. **Document Deviations:** If implementation differs from tech stack:
+8. **Document Deviations:** If implementation differs from tech stack:
    - **STOP** implementation
    - Update `tech-stack.md` with new design
    - Add dated note explaining the change
    - Resume implementation
 
-8. **Attach Task Summary with Git Notes:**
-   - **Step 8.1: Draft Note Content:** Create a detailed summary for the completed task. This should include the task name, a summary of changes, a list of all created/modified files, and the core "why" for the change.
-   - **Step 8.2: Attach Note:** Use the `git notes` command to attach the summary to the last commit of the phase (during the Checkpointing Protocol).
+9. **Attach Task Summary with Git Notes:**
+   - **Step 9.1: Draft Note Content:** Create a detailed summary for the completed task. This should include the task name, a summary of changes, a list of all created/modified files, and the core "why" for the change.
+   - **Step 9.2: Attach Note:** Use the `git notes` command to attach the summary to the last commit of the phase (during the Checkpointing Protocol).
 
-9. **Get and Record Task Status:**
-    - **Step 9.1: Update Plan:** Read `plan.md`, find the line for the completed task, and update its status from `[~]` to `[x]`.
-    - **Step 9.2: Write Plan:** Write the updated content back to `plan.md`.
+10. **Get and Record Task Status:**
+    - **Step 10.1: Update Plan:** Read `plan.md`, find the line for the completed task, and update its status from `[~]` to `[x]`.
+    - **Step 10.2: Write Plan:** Write the updated content back to `plan.md`.
 
 ### Phase Completion Verification and Checkpointing Protocol
 
@@ -124,6 +129,7 @@ Before marking any phase complete, verify:
 - [ ] All tests pass
 - [ ] Code coverage meets requirements (>60%)
 - [ ] Code follows project's code style guidelines (as defined in `code_styleguides/`)
+- [ ] `cargo clippy` passed with no issues (for Rust changes)
 - [ ] All public functions/methods are documented (e.g., docstrings, JSDoc, GoDoc)
 - [ ] Type safety is enforced (e.g., type hints, TypeScript types, Go types)
 - [ ] No linting or static analysis errors (using the project's configured tools)
@@ -149,8 +155,11 @@ pnpm tauri dev
 # Run frontend checks (Svelte check + TypeScript)
 pnpm check
 
-# Run tests (To be configured)
-# pnpm test
+# Run Rust linting
+cd src-tauri && cargo clippy
+
+# Run tests
+pnpm test
 ```
 
 ### Before Committing
