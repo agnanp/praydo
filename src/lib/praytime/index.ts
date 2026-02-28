@@ -102,7 +102,7 @@ class PrayTime {
   private labels: string[];
   private utcTime: number = 0;
   private adjusted: boolean = false;
-  private sunPositionCache: Record<number, SunPosition> = {}; // Cache for sun positions
+  private sunPositionCache: Record<string, SunPosition> = {}; // Cache for sun positions
 
   constructor(method?: CalculationMethod) {
     this.methods = {
@@ -330,9 +330,6 @@ class PrayTime {
 
   // compute prayer times
   private computeTimes(): Times {
-    // Clear the sun position cache for this calculation cycle
-    this.sunPositionCache = {};
-
     let times: Times = {
       fajr: 5,
       sunrise: 6,
@@ -430,9 +427,10 @@ class PrayTime {
 
   // compute sun position
   private sunPosition(time: number): SunPosition {
+    const cacheKey = `${this.utcTime}-${time}`;
     // Check if the sun position for this time is already cached
-    if (this.sunPositionCache[time]) {
-      return this.sunPositionCache[time];
+    if (this.sunPositionCache[cacheKey]) {
+      return this.sunPositionCache[cacheKey];
     }
 
     const lng = this.settings.location[1];
@@ -454,7 +452,7 @@ class PrayTime {
     };
 
     // Cache the result
-    this.sunPositionCache[time] = sunPos;
+    this.sunPositionCache[cacheKey] = sunPos;
     return sunPos;
   }
 

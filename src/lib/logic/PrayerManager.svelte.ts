@@ -13,6 +13,8 @@ import { playSound } from '$lib/sound';
 import { gregorianToHijri } from '@tabby_ai/hijri-converter';
 import { formattedLocation } from '$lib/utils/stringUtils';
 import { calculateQiblaBearing } from '$lib/utils/qibla';
+import { formatHijriDate } from '$lib/utils/islamic';
+import { parseTimeString } from '$lib/utils/time';
 import type { PrayerName, PrayerTimes } from './types';
 
 export class PrayerManager {
@@ -109,22 +111,7 @@ export class PrayerManager {
       day: this.currentTime.getDate(),
     });
 
-    const hijriMonths = [
-      'Muharram',
-      'Safar',
-      'Rabi al-Awwal',
-      'Rabi al-Thani',
-      'Jumada al-Awwal',
-      'Jumada al-Thani',
-      'Rajab',
-      'Shaban',
-      'Ramadan',
-      'Shawwal',
-      'Dhul-Qadah',
-      'Dhul-Hijjah',
-    ];
-
-    return `${hijriDate.day} ${hijriMonths[hijriDate.month - 1]} ${hijriDate.year} AH`;
+    return formatHijriDate(hijriDate);
   });
 
   currentLocationLabel = $derived(
@@ -224,17 +211,7 @@ export class PrayerManager {
   }
 
   private parseTime(timeString: string): Date {
-    const date = new Date(this.currentTime); // Clone current date to keep Year/Month/Day
-    if (!timeString) return date;
-
-    const [time, modifier] = timeString.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-
-    if (modifier === 'PM' && hours < 12) hours += 12;
-    if (modifier === 'AM' && hours === 12) hours = 0;
-
-    date.setHours(hours, minutes, 0, 0);
-    return date;
+    return parseTimeString(timeString, this.currentTime);
   }
 
   // --- Notification Logic ---

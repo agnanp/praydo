@@ -1,7 +1,7 @@
 use tauri::{
     menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::TrayIconBuilder,
-    Manager, Emitter,
+    Manager,
 };
 use tauri_plugin_notification::NotificationExt;
 
@@ -13,11 +13,6 @@ fn send_native_notification(app: tauri::AppHandle, title: String, body: String) 
         .body(body)
         .show()
         .map_err(|e| e.to_string())
-}
-
-fn navigate_to_main(app: tauri::AppHandle) {
-    dbg!("Navigate to main");
-    let _ = app.emit("navigate_to_main", ());
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -77,7 +72,6 @@ pub fn run() {
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();
-                navigate_to_main(window.app_handle().clone());
                 let _ = window.hide();
                 let _ = send_native_notification(
                     window.app_handle().clone(),

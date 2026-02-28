@@ -17,7 +17,6 @@
   import { selectedLocation } from '$lib/store/selectedLocation';
   import { geocode } from '$lib/api/location/GeocodeApi';
   import { onMount } from 'svelte';
-  import { listen } from '@tauri-apps/api/event';
   import { getVersion } from '@tauri-apps/api/app';
   import { selectedTimes } from '$lib/store/selectedTimes';
   import { selectedAlert } from '$lib/store/selectedAlert';
@@ -63,8 +62,6 @@
   let ishaPlaceholder = $derived(
     `Enter the ${calculationSettings.state.ishaMode === 'degrees' ? 'degrees value' : 'value of minutes after maghrib'}`
   );
-
-  let unlistenFn: (() => void) | null = null;
 
   function debounceSearch(query: string) {
     // Clear any existing debounce timer
@@ -167,19 +164,9 @@
         console.error('Failed to get app version', e);
         appVersion = 'Unknown';
       }
-
-      unlistenFn = await listen('navigate_to_main', () => {
-        goto('/');
-      });
     };
 
     setup();
-
-    return () => {
-      if (unlistenFn) {
-        unlistenFn();
-      }
-    };
   });
 </script>
 
