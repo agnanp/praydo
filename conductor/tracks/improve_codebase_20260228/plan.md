@@ -1,12 +1,12 @@
 # Implementation Plan: Improve Codebase based on Code Review Findings
 
 ## Phase 1: API and Calculation Refinements
-- [ ] Task: Refactor Geocoding API error handling
-    - [ ] Write tests for `src/lib/api/location/GeocodeApi.ts` (mocking fetch failures)
-    - [ ] Implement robust error handling and `response.ok` checks in `geocode` function
-- [ ] Task: Refactor PrayTime UTC offset logic
-    - [ ] Write tests for `src/lib/praytime/index.ts` (specifically `utcOffset` with various inputs)
-    - [ ] Implement explicit and unambiguous UTC offset detection logic
+- [x] Task: Refactor Geocoding API error handling
+    - [x] Write tests for `src/lib/api/location/GeocodeApi.test.ts` (mocking fetch failures)
+    - [x] Implement robust error handling and `response.ok` checks in `geocode` function
+- [x] Task: Refactor PrayTime UTC offset logic
+    - [x] Write tests for `src/lib/praytime/index.test.ts` (specifically `utcOffset` with various inputs)
+    - [x] Implement explicit and unambiguous UTC offset detection logic
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: API and Calculation Refinements' (Protocol in workflow.md)
 
 ## Phase 2: Backend and Configuration Enhancements

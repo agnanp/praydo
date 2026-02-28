@@ -246,10 +246,13 @@ class PrayTime {
 
   // set utc offset
   utcOffset(utcOffset: number | 'auto' = 'auto'): PrayTime {
-    if (typeof utcOffset === 'number' && Math.abs(utcOffset) < 16)
-      utcOffset *= 60;
     this.set({ timezone: 'UTC' });
     return this.set({ utcOffset });
+  }
+
+  // set utc offset in hours
+  utcOffsetHours(hours: number): PrayTime {
+    return this.utcOffset(hours * 60);
   }
 
   //---------------------- Getters ------------------------
@@ -310,9 +313,9 @@ class PrayTime {
     format: TimeFormat = '24h',
   ): Record<string, string> {
     if (!location) return this.times(date);
-    const utcOffset =
-      timezone === 'auto' ? timezone : (timezone as number) + dst;
-    this.location(location).utcOffset(utcOffset).format(format);
+    const offset =
+      timezone === 'auto' ? timezone : ((timezone as number) + dst) * 60;
+    this.location(location).utcOffset(offset).format(format);
     return this.times(date);
   }
 

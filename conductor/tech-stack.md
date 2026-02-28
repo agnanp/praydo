@@ -19,3 +19,6 @@
 ## 5. Build & Package Management
 *   **Vite 6:** The build tool and development server for the frontend.
 *   **pnpm 10:** The fast and efficient package manager used for managing dependencies.
+
+## 6. Testing
+*   **Vitest:** A Vite-native unit testing framework for validating application logic.
