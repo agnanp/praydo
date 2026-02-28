@@ -5,25 +5,19 @@ use tauri::{
 };
 use tauri_plugin_notification::NotificationExt;
 
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-#[tauri::command]
-fn send_native_notification(app: tauri::AppHandle, title: String, body: String) {
+fn send_native_notification(app: tauri::AppHandle, title: String, body: String) -> Result<(), String> {
     app.notification()
         .builder()
         .title(title)
         .body(body)
         .show()
-        .unwrap();
+        .map_err(|e| e.to_string())
 }
 
 fn navigate_to_main(app: tauri::AppHandle) {
     dbg!("Navigate to main");
-    app.emit("navigate_to_main", ()).unwrap();
+    let _ = app.emit("navigate_to_main", ());
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -41,8 +35,7 @@ pub fn run() {
 
             let menu = Menu::with_items(app, &[&open_i, &hide_i, &separator_i, &quit_i])?;
             
-            let _tray = TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
+            let tray_builder = TrayIconBuilder::new()
                 .menu(&menu)
                 .show_menu_on_left_click(true)
                 .on_menu_event(|app, event| match event.id.as_ref() {
@@ -52,32 +45,41 @@ pub fn run() {
                     },
                     "hide" => {
                         dbg!("Hide menu item was clicked");
-                        let window = app.get_webview_window("main").unwrap();
-                        window.hide().unwrap();
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.hide();
+                        }
                     },
                     "open" => {
                         dbg!("Open menu item was clicked");
-                        let window = app.get_webview_window("main").unwrap();
-                        window.show().unwrap();
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.show();
+                        }
                     },
                     _ => {
                         println!("Menu item {:?} not handled", event.id);
                     }
-                })
-                .build(app)?;
+                });
+
+            let tray_builder = if let Some(icon) = app.default_window_icon() {
+                tray_builder.icon(icon.clone())
+            } else {
+                tray_builder
+            };
+
+            let _ = tray_builder.build(app);
             Ok(())
         })
         .plugin(tauri_plugin_svelte::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, send_native_notification])
+        .invoke_handler(tauri::generate_handler![send_native_notification])
         .on_window_event(|window, event| match event {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 api.prevent_close();
                 navigate_to_main(window.app_handle().clone());
-                window.hide().unwrap();
-                send_native_notification(
+                let _ = window.hide();
+                let _ = send_native_notification(
                     window.app_handle().clone(),
                     "Praydo Running in the Background".to_string(),
                     "Click the tray icon to restore.".to_string()
