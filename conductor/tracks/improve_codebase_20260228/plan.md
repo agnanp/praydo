@@ -9,22 +9,22 @@
     - [x] Implement explicit and unambiguous UTC offset detection logic
 - [x] Task: Conductor - User Manual Verification 'Phase 1: API and Calculation Refinements' (Protocol in workflow.md)
 
-## Phase 2: Backend and Configuration Enhancements
+## Phase 2: Backend and Configuration Enhancements [checkpoint: 3cdb187]
 - [x] Task: Safe Error Handling in Rust
     - [x] Identify all `.unwrap()` calls in `src-tauri/src/lib.rs`
     - [x] Replace `unwrap()` with `Result` and appropriate error propagation in commands and tray setup
 - [x] Task: Backend Cleanup and Configuration
     - [x] Remove unused `greet` command and associated logic in `src-tauri/src/lib.rs`
     - [x] Update bundle identifier in `src-tauri/tauri.conf.json` to `id.my.apr.praydo`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend and Configuration Enhancements' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Backend and Configuration Enhancements' (Protocol in workflow.md)
 
 ## Phase 3: Baseline Quality and Testing
-- [ ] Task: Establish PrayerManager unit tests
-    - [ ] Create `tests/lib/logic/PrayerManager.test.ts` (or equivalent location)
-    - [ ] Implement tests for prayer time derivation logic
-    - [ ] Implement tests for countdown timer accuracy
-    - [ ] Implement tests for notification triggering (mocking time and permissions)
-- [ ] Task: Final Quality Verification
-    - [ ] Run `pnpm check` and ensure zero errors
-    - [ ] Run all tests and verify >60% coverage for modified modules
+- [x] Task: Establish PrayerManager unit tests
+    - [x] Create `src/lib/logic/PrayerManager.test.ts` (or equivalent location)
+    - [x] Implement tests for prayer time derivation logic
+    - [x] Implement tests for countdown timer accuracy
+    - [x] Implement tests for notification triggering (mocking time and permissions)
+- [x] Task: Final Quality Verification
+    - [x] Run `pnpm check` and ensure zero errors
+    - [x] Run all tests and verify >60% coverage for modified modules
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Baseline Quality and Testing' (Protocol in workflow.md)

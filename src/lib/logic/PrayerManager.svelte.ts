@@ -13,14 +13,17 @@ import type { PrayerName, PrayerTimes } from './types';
 
 export class PrayerManager {
     currentTime = $state(new Date());
+    private lastCheckedTime = new Date();
 
     private intervalId: ReturnType<typeof setInterval>;
 
     constructor() {
         // Single tick loop for the entire app
         this.intervalId = setInterval(() => {
-            this.currentTime = new Date();
-            this.checkNotifications();
+            const now = new Date();
+            this.checkNotifications(this.lastCheckedTime, now);
+            this.currentTime = now;
+            this.lastCheckedTime = now;
         }, 1000);
     }
 
@@ -210,25 +213,32 @@ export class PrayerManager {
 
     // --- Notification Logic ---
 
-    private async checkNotifications() {
-        const now = this.currentTime;
-        // Only check at the start of a second (approx)
-        // But since this is called once per second, we just check equality.
-        
+    private async checkNotifications(prev: Date, current: Date) {
         for (const prayer of this.enabledPrayers) {
             const prayerDate = this.parseTime(prayer.time);
             
             // 1. Pre-prayer notification (N minutes before)
             const nMinutesBefore = new Date(prayerDate.getTime() - timeRemaining.state.minutes * 60 * 1000);
-            if (this.isSameTime(now, nMinutesBefore)) {
+            if (this.wasTimeCrossed(prev, current, nMinutesBefore)) {
                 await this.sendNMinutesNotification(prayer.name, prayer.time);
             }
 
             // 2. Exact time notification
-            if (this.isSameTime(now, prayerDate)) {
+            if (this.wasTimeCrossed(prev, current, prayerDate)) {
                 await this.sendPrayerNotification(prayer.name, prayer.time);
             }
         }
+    }
+
+    private wasTimeCrossed(prev: Date, current: Date, target: Date): boolean {
+        // Returns true if target time falls between prev (exclusive) and current (inclusive)
+        // We only care about the time part for prayer times on the same day.
+        
+        const prevTime = prev.getTime();
+        const currentTime = current.getTime();
+        const targetTime = target.getTime();
+
+        return targetTime > prevTime && targetTime <= currentTime;
     }
 
     private isSameTime(d1: Date, d2: Date): boolean {
