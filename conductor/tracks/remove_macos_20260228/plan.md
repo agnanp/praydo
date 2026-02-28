@@ -1,12 +1,12 @@
 # Implementation Plan: Remove macOS Support and CI Integration
 
 ## Phase 1: Configuration and CI Cleanup
-- [ ] Task: Update GitHub Release workflow
-    - [ ] Remove `macos-latest` job from `.github/workflows/release.yml`
-    - [ ] Remove macOS-specific steps (DMG signing, notarization) and environment variables
-- [ ] Task: Update Tauri configuration
-    - [ ] Remove `dmg` and `app` from `targets` in `src-tauri/tauri.conf.json`
-    - [ ] Remove `icons/icon.icns` reference from `bundle.icon` in `src-tauri/tauri.conf.json`
+- [x] Task: Update GitHub Release workflow
+    - [x] Remove `macos-latest` job from `.github/workflows/release.yml`
+    - [x] Remove macOS-specific steps (DMG signing, notarization) and environment variables
+- [x] Task: Update Tauri configuration
+    - [x] Remove `dmg` and `app` from `targets` in `src-tauri/tauri.conf.json`
+    - [x] Remove `icons/icon.icns` reference from `bundle.icon` in `src-tauri/tauri.conf.json`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration and CI Cleanup' (Protocol in workflow.md)
 
 ## Phase 2: Repository Cleanup and Final Verification
