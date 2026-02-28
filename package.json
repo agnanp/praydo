@@ -12,7 +12,12 @@
     "tauri": "tauri",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,svelte,css,json,html}": "prettier --write"
   },
   "license": "MIT",
   "dependencies": {
@@ -37,6 +42,10 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tauri-apps/cli": "^2",
     "@vitest/coverage-v8": "^4.0.18",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
+    "prettier-plugin-svelte": "^3.5.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "typescript": "~5.6.2",
