@@ -26,28 +26,28 @@
 
 //------------------------- Type Definitions ------------------------
 type CalculationMethod =
-  | "MWL"
-  | "ISNA"
-  | "Egypt"
-  | "Makkah"
-  | "Karachi"
-  | "Tehran"
-  | "Jafari"
-  | "France"
-  | "Russia"
-  | "Singapore"
-  | "NU"
-  | "MU";
-type HighLatitudeMethod = "NightMiddle" | "OneSeventh" | "AngleBased" | "None";
-type AsrMethod = "Standard" | "Hanafi" | number | string;
-type MidnightMethod = "Standard" | "Jafari";
-type RoundingMethod = "nearest" | "up" | "down" | "none";
+  | 'MWL'
+  | 'ISNA'
+  | 'Egypt'
+  | 'Makkah'
+  | 'Karachi'
+  | 'Tehran'
+  | 'Jafari'
+  | 'France'
+  | 'Russia'
+  | 'Singapore'
+  | 'NU'
+  | 'MU';
+type HighLatitudeMethod = 'NightMiddle' | 'OneSeventh' | 'AngleBased' | 'None';
+type AsrMethod = 'Standard' | 'Hanafi' | number | string;
+type MidnightMethod = 'Standard' | 'Jafari';
+type RoundingMethod = 'nearest' | 'up' | 'down' | 'none';
 type TimeFormat =
-  | "24h"
-  | "12h"
-  | "12H"
-  | "x"
-  | "X"
+  | '24h'
+  | '12h'
+  | '12H'
+  | 'x'
+  | 'X'
   | ((timestamp: number) => string);
 
 interface MethodParams {
@@ -67,7 +67,7 @@ interface Settings {
   tune: Record<string, number>;
   format: TimeFormat;
   rounding: RoundingMethod;
-  utcOffset: number | "auto";
+  utcOffset: number | 'auto';
   timezone: string;
   location: [number, number];
   iterations: number;
@@ -109,49 +109,49 @@ class PrayTime {
       MWL: { fajr: 18, isha: 17 },
       ISNA: { fajr: 15, isha: 15 },
       Egypt: { fajr: 19.5, isha: 17.5 },
-      Makkah: { fajr: 18.5, isha: "90 min" },
+      Makkah: { fajr: 18.5, isha: '90 min' },
       Karachi: { fajr: 18, isha: 18 },
-      Tehran: { fajr: 17.7, maghrib: 4.5, midnight: "Jafari" },
-      Jafari: { fajr: 16, maghrib: 4, midnight: "Jafari" },
+      Tehran: { fajr: 17.7, maghrib: 4.5, midnight: 'Jafari' },
+      Jafari: { fajr: 16, maghrib: 4, midnight: 'Jafari' },
       France: { fajr: 12, isha: 12 },
       Russia: { fajr: 16, isha: 15 },
       Singapore: { fajr: 20, isha: 18 },
       NU: { fajr: 20, isha: 18 },
       MU: { fajr: 18, isha: 18 },
-      defaults: { isha: 14, maghrib: "1 min", midnight: "Standard" },
+      defaults: { isha: 14, maghrib: '1 min', midnight: 'Standard' },
     };
 
     this.settings = {
-      dhuhr: "0 min",
-      asr: "Standard",
-      highLats: "NightMiddle",
+      dhuhr: '0 min',
+      asr: 'Standard',
+      highLats: 'NightMiddle',
       tune: {},
-      format: "24h",
-      rounding: "nearest",
-      utcOffset: "auto",
+      format: '24h',
+      rounding: 'nearest',
+      utcOffset: 'auto',
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       location: [0, -new Date().getTimezoneOffset() / 4],
       iterations: 1,
     };
 
     this.labels = [
-      "Fajr",
-      "Sunrise",
-      "Dhuhr",
-      "Asr",
-      "Sunset",
-      "Maghrib",
-      "Isha",
-      "Midnight",
+      'Fajr',
+      'Sunrise',
+      'Dhuhr',
+      'Asr',
+      'Sunset',
+      'Maghrib',
+      'Isha',
+      'Midnight',
     ];
 
-    this.method(method || "MWL");
+    this.method(method || 'MWL');
   }
 
   //---------------------- Setters ------------------------
 
   // set calculation method
-  public method(method: CalculationMethod): PrayTime {
+  method(method: CalculationMethod): PrayTime {
     return this.set(this.methods.defaults).set(this.methods[method]);
   }
 
@@ -170,7 +170,7 @@ class PrayTime {
    *                  - highLats: higher latitudes adjustment
    * @returns The adjusted PrayTime instance
    */
-  public adjust(params: Partial<MethodParams>): PrayTime {
+  adjust(params: Partial<MethodParams>): PrayTime {
     return this.set(params);
   }
 
@@ -195,7 +195,7 @@ class PrayTime {
    *
    * @returns The PrayTime instance for method chaining
    */
-  public location(location: [number, number]): PrayTime {
+  location(location: [number, number]): PrayTime {
     return this.set({ location });
   }
 
@@ -219,46 +219,46 @@ class PrayTime {
    *
    * @returns The PrayTime instance for method chaining
    */
-  public timezone(timezone: string): PrayTime {
+  timezone(timezone: string): PrayTime {
     return this.set({ timezone });
   }
 
   // set tuning minutes
-  public tune(tune: Record<string, number>): PrayTime {
+  tune(tune: Record<string, number>): PrayTime {
     return this.set({ tune });
   }
 
   // set rounding method
-  public round(rounding: RoundingMethod = "nearest"): PrayTime {
+  round(rounding: RoundingMethod = 'nearest'): PrayTime {
     return this.set({ rounding });
   }
 
   // set time format
-  public format(format: TimeFormat): PrayTime {
+  format(format: TimeFormat): PrayTime {
     return this.set({ format });
   }
 
   // set settings parameters
-  public set(settings: Partial<Settings | MethodParams>): PrayTime {
+  set(settings: Partial<Settings | MethodParams>): PrayTime {
     Object.assign(this.settings, settings);
     return this;
   }
 
   // set utc offset
-  public utcOffset(utcOffset: number | "auto" = "auto"): PrayTime {
-    if (typeof utcOffset === "number" && Math.abs(utcOffset) < 16)
+  utcOffset(utcOffset: number | 'auto' = 'auto'): PrayTime {
+    if (typeof utcOffset === 'number' && Math.abs(utcOffset) < 16)
       utcOffset *= 60;
-    this.set({ timezone: "UTC" });
+    this.set({ timezone: 'UTC' });
     return this.set({ utcOffset });
   }
 
   //---------------------- Getters ------------------------
 
   // get prayer times
-  public times(
+  times(
     date: number | Date | [number, number, number] = 0,
   ): Record<string, string> {
-    if (typeof date === "number")
+    if (typeof date === 'number')
       date = new Date(date < 1000 ? Date.now() + date * 864e5 : date);
     if (date instanceof Date)
       date = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
@@ -302,16 +302,16 @@ class PrayTime {
    *
    * @returns An object containing prayer times with time names as keys
    */
-  public getTimes(
+  getTimes(
     date?: number | Date | [number, number, number],
     location?: [number, number],
-    timezone: string | number = "auto",
+    timezone: string | number = 'auto',
     dst: number = 0,
-    format: TimeFormat = "24h",
+    format: TimeFormat = '24h',
   ): Record<string, string> {
     if (!location) return this.times(date);
     const utcOffset =
-      timezone === "auto" ? timezone : (timezone as number) + dst;
+      timezone === 'auto' ? timezone : (timezone as number) + dst;
     this.location(location).utcOffset(utcOffset).format(format);
     return this.times(date);
   }
@@ -319,7 +319,7 @@ class PrayTime {
   //---------------------- Deprecated -------------------------
 
   // deprecated: set calculation method
-  public setMethod(method: CalculationMethod): void {
+  setMethod(method: CalculationMethod): void {
     this.method(method);
   }
 
@@ -376,7 +376,7 @@ class PrayTime {
       times.maghrib = times.sunset + this.value(params.maghrib) / 60;
     if (params.isha !== undefined && this.isMin(params.isha))
       times.isha = times.maghrib + this.value(params.isha) / 60;
-    if (params.midnight === "Jafari" && params.fajr !== undefined) {
+    if (params.midnight === 'Jafari' && params.fajr !== undefined) {
       const nextFajr = this.angleTime(params.fajr, 29, -1) + 24;
       times.midnight =
         (times.sunset + (this.adjusted ? times.fajr + 24 : nextFajr)) / 2;
@@ -408,9 +408,9 @@ class PrayTime {
   private roundTime(timestamp: number): number {
     const roundingMethod = this.settings.rounding;
     const rounding = {
-      up: "ceil",
-      down: "floor",
-      nearest: "round",
+      up: 'ceil',
+      down: 'floor',
+      nearest: 'round',
       none: null,
     }[roundingMethod];
 
@@ -418,7 +418,7 @@ class PrayTime {
 
     const OneMinute = 6e4;
     return (
-      Math[rounding as "ceil" | "floor" | "round"](timestamp / OneMinute) *
+      Math[rounding as 'ceil' | 'floor' | 'round'](timestamp / OneMinute) *
       OneMinute
     );
   }
@@ -490,7 +490,7 @@ class PrayTime {
   // adjust times for higher latitudes
   private adjustHighLats(times: Times): void {
     const params = this.settings;
-    if (params.highLats === "None") return;
+    if (params.highLats === 'None') return;
 
     this.adjusted = false;
     const night = 24 + times.sunrise - times.sunset;
@@ -548,11 +548,11 @@ class PrayTime {
   // format time
   private formatTime(timestamp: number): string {
     const format = this.settings.format;
-    const InvalidTime = "-----";
+    const InvalidTime = '-----';
     if (isNaN(timestamp)) return InvalidTime;
-    if (typeof format === "function") return format(timestamp);
-    if (format.toLowerCase() === "x")
-      return Math.floor(timestamp / (format === "X" ? 1000 : 1)).toString();
+    if (typeof format === 'function') return format(timestamp);
+    if (format.toLowerCase() === 'x')
+      return Math.floor(timestamp / (format === 'X' ? 1000 : 1)).toString();
     return this.timeToString(timestamp, format);
   }
 
@@ -560,15 +560,15 @@ class PrayTime {
   private timeToString(timestamp: number, format: TimeFormat): string {
     const utcOffset = this.settings.utcOffset;
     const date = new Date(
-      timestamp + (utcOffset === "auto" ? 0 : (utcOffset as number)) * 6e4,
+      timestamp + (utcOffset === 'auto' ? 0 : (utcOffset as number)) * 6e4,
     );
-    const str = date.toLocaleTimeString("en-US", {
+    const str = date.toLocaleTimeString('en-US', {
       timeZone: this.settings.timezone,
-      hour12: format === "24h" ? false : true,
-      hour: format === "24h" ? "2-digit" : "numeric",
-      minute: "2-digit",
+      hour12: format === '24h' ? false : true,
+      hour: format === '24h' ? '2-digit' : 'numeric',
+      minute: '2-digit',
     });
-    return format === "12H" ? str.replace(/ ?[AP]M/, "") : str;
+    return format === '12H' ? str.replace(/ ?[AP]M/, '') : str;
   }
 
   //---------------------- Misc Functions -----------------------
@@ -580,7 +580,7 @@ class PrayTime {
 
   // detect if input contains 'min'
   private isMin(str: number | string): boolean {
-    return String(str).indexOf("min") !== -1;
+    return String(str).indexOf('min') !== -1;
   }
 
   // positive modulo

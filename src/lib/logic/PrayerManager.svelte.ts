@@ -1,15 +1,15 @@
-import { PrayTime } from "$lib/praytime";
-import { selectedLocation } from "$lib/store/selectedLocation";
-import { calculationSettings } from "$lib/store/calculationSettings";
-import { selectedTimes } from "$lib/store/selectedTimes";
-import { timeRemaining } from "$lib/store/timeRemaining";
-import { selectedAlert } from "$lib/store/selectedAlert";
-import { invoke } from "@tauri-apps/api/core";
-import { isPermissionGranted, requestPermission } from "@tauri-apps/plugin-notification";
-import { playSound } from "$lib/sound";
-import { gregorianToHijri } from "@tabby_ai/hijri-converter";
-import { formattedLocation } from "$lib/utils/stringUtils";
-import type { PrayerName, PrayerTimes } from "./types";
+import { PrayTime } from '$lib/praytime';
+import { selectedLocation } from '$lib/store/selectedLocation';
+import { calculationSettings } from '$lib/store/calculationSettings';
+import { selectedTimes } from '$lib/store/selectedTimes';
+import { timeRemaining } from '$lib/store/timeRemaining';
+import { selectedAlert } from '$lib/store/selectedAlert';
+import { invoke } from '@tauri-apps/api/core';
+import { isPermissionGranted, requestPermission } from '@tauri-apps/plugin-notification';
+import { playSound } from '$lib/sound';
+import { gregorianToHijri } from '@tabby_ai/hijri-converter';
+import { formattedLocation } from '$lib/utils/stringUtils';
+import type { PrayerName, PrayerTimes } from './types';
 
 export class PrayerManager {
     currentTime = $state(new Date());
@@ -45,7 +45,7 @@ export class PrayerManager {
 
     private createPrayTimeInstance(): PrayTime {
         let pt: PrayTime;
-        if (calculationSettings.state.method === "custom") {
+        if (calculationSettings.state.method === 'custom') {
             pt = new PrayTime();
             pt.adjust({
                 fajr: calculationSettings.state.fajrAngle,
@@ -76,12 +76,12 @@ export class PrayerManager {
 
     formattedDate = $derived.by(() => {
         const options: Intl.DateTimeFormatOptions = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
         };
-        return this.currentTime.toLocaleDateString("en-US", options);
+        return this.currentTime.toLocaleDateString('en-US', options);
     });
 
     islamicDate = $derived.by(() => {
@@ -92,9 +92,9 @@ export class PrayerManager {
         });
 
         const hijriMonths = [
-            "Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani",
-            "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Shaban",
-            "Ramadan", "Shawwal", "Dhul-Qadah", "Dhul-Hijjah",
+            'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani',
+            'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', 'Shaban',
+            'Ramadan', 'Shawwal', 'Dhul-Qadah', 'Dhul-Hijjah',
         ];
 
         return `${hijriDate.day} ${hijriMonths[hijriDate.month - 1]} ${hijriDate.year} AH`;
@@ -169,22 +169,22 @@ export class PrayerManager {
     });
 
     countdownString = $derived.by(() => {
-        if (!this.nextPrayer) return "";
+        if (!this.nextPrayer) return '';
 
         const diff = this.nextPrayer.date.getTime() - this.currentTime.getTime();
-        if (diff < 0) return "00:00:00"; // Should not happen ideally due to loop
+        if (diff < 0) return '00:00:00'; // Should not happen ideally due to loop
 
         const hours = Math.floor(diff / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     });
 
     // --- Helpers ---
 
     private getEnabledPrayersList(times: Record<string, string>) {
-        const prayerNames: PrayerName[] = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+        const prayerNames: PrayerName[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         return prayerNames
             .map(name => ({
                 name,
@@ -198,11 +198,11 @@ export class PrayerManager {
         const date = new Date(this.currentTime); // Clone current date to keep Year/Month/Day
         if (!timeString) return date;
 
-        const [time, modifier] = timeString.split(" ");
-        let [hours, minutes] = time.split(":").map(Number);
+        const [time, modifier] = timeString.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
 
-        if (modifier === "PM" && hours < 12) hours += 12;
-        if (modifier === "AM" && hours === 12) hours = 0;
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
 
         date.setHours(hours, minutes, 0, 0);
         return date;
@@ -236,23 +236,23 @@ export class PrayerManager {
                d1.getMinutes() === d2.getMinutes() &&
                d1.getSeconds() === d2.getSeconds(); // Assuming loop runs close to second boundary
                // Note: In a real loop, seconds might skip if blocked. 
-               // But for a desktop clock app, this simple check is usually "good enough" 
-               // or we'd need state to track "last checked time".
+               // But for a desktop clock app, this simple check is usually 'good enough' 
+               // or we'd need state to track 'last checked time'.
     }
 
     private async sendNMinutesNotification(name: string, time: string) {
         if (await this.ensurePermission()) {
-            invoke("send_native_notification", {
+            invoke('send_native_notification', {
                 title: `${timeRemaining.state.minutes} Minutes Until ${name} Time`,
                 body: `${name} Time: ${time}.`,
             });
         }
-        playSound("solemn.mp3");
+        playSound('solemn.mp3');
     }
 
     private async sendPrayerNotification(name: string, time: string) {
         if (await this.ensurePermission()) {
-             invoke("send_native_notification", {
+             invoke('send_native_notification', {
                 title: `${name} Time ${time}`,
                 body: `${name} time in ${this.currentLocationLabel}.`,
             });
@@ -263,13 +263,13 @@ export class PrayerManager {
         const isAlertEnabled = selectedAlert.state.alert[prayerKey as keyof typeof selectedAlert.state.alert];
         
         if (isAlertEnabled) {
-            if (prayerKey === "fajr") {
-                playSound("adhan-fajr.mp3");
+            if (prayerKey === 'fajr') {
+                playSound('adhan-fajr.mp3');
             } else {
-                playSound("adhan-makkah.mp3");
+                playSound('adhan-makkah.mp3');
             }
         } else {
-            playSound("solemn.mp3");
+            playSound('solemn.mp3');
         }
     }
 
@@ -277,7 +277,7 @@ export class PrayerManager {
         let granted = await isPermissionGranted();
         if (!granted) {
             const result = await requestPermission();
-            granted = result === "granted";
+            granted = result === 'granted';
         }
         return granted;
     }
