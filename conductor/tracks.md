@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Forced Initial Location Setup**
+- [~] **Track: Forced Initial Location Setup**
       _Link: [./tracks/force_location_setup_20260228/](./tracks/force_location_setup_20260228/)_

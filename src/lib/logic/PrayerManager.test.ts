@@ -8,10 +8,17 @@ import { selectedAlert } from '$lib/store/selectedAlert';
 import { isPermissionGranted } from '@tauri-apps/plugin-notification';
 
 // Mock all external dependencies
-vi.mock('$lib/store/selectedLocation', () => ({
-  selectedLocation: {
-    state: { latitude: -6.2088, longitude: 106.8456, label: 'Jakarta' },
+const mockLocation = vi.hoisted(() => ({
+  state: {
+    latitude: -6.2088,
+    longitude: 106.8456,
+    label: 'Jakarta',
+    id: 'jakarta-1',
   },
+}));
+
+vi.mock('$lib/store/selectedLocation', () => ({
+  selectedLocation: mockLocation,
 }));
 vi.mock('$lib/store/calculationSettings', () => ({
   calculationSettings: {
@@ -170,5 +177,31 @@ describe('PrayerManager', () => {
         title: expect.stringContaining(prayer.name),
       })
     );
+  });
+
+  it('should detect when setup is required (empty location)', () => {
+    // 1. Initially Jakarta (from beforeEach), setup NOT required
+    expect(manager.isSetupRequired).toBe(false);
+
+    // 2. Set label to empty and create new manager to pick up change
+    mockLocation.state.label = '';
+    let manager2 = new PrayerManager();
+    expect(manager2.isSetupRequired).toBe(true);
+    manager2.destroy();
+
+    // 3. Reset and check again
+    mockLocation.state.label = 'Jakarta';
+    manager2 = new PrayerManager();
+    expect(manager2.isSetupRequired).toBe(false);
+    manager2.destroy();
+
+    // 4. Set ID to empty
+    mockLocation.state.id = '';
+    manager2 = new PrayerManager();
+    expect(manager2.isSetupRequired).toBe(true);
+    manager2.destroy();
+
+    // Clean up mock for other tests
+    mockLocation.state.id = 'jakarta-1';
   });
 });

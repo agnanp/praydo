@@ -114,6 +114,10 @@ export class PrayerManager {
     return formatHijriDate(hijriDate);
   });
 
+  isSetupRequired = $derived.by(() => {
+    return !selectedLocation.state.label || !selectedLocation.state.id;
+  });
+
   currentLocationLabel = $derived(
     formattedLocation(selectedLocation.state.label)
   );

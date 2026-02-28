@@ -1,10 +1,10 @@
 # Implementation Plan: Forced Initial Location Setup
 
 ## Phase 1: Logic & State Management
-- [ ] Task: Implement first-run detection logic
-    - [ ] Write tests in `src/lib/logic/PrayerManager.test.ts` to verify `isSetupRequired` logic.
-    - [ ] Implement `isSetupRequired` derived state in `PrayerManager.svelte.ts` based on empty `selectedLocation`.
-- [ ] Task: Create Onboarding Wizard store (if needed) or reactive state
+- [x] Task: Implement first-run detection logic
+    - [x] Write tests in `src/lib/logic/PrayerManager.test.ts` to verify `isSetupRequired` logic.
+    - [x] Implement `isSetupRequired` derived state in `PrayerManager.svelte.ts` based on empty `selectedLocation`.
+- [~] Task: Create Onboarding Wizard store (if needed) or reactive state
     - [ ] Write tests for wizard step progression logic.
     - [ ] Implement reactive state for tracking wizard steps.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Logic & State Management' (Protocol in workflow.md)
