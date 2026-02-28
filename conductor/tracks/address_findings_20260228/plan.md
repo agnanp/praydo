@@ -13,7 +13,7 @@
     - [x] Update UI components and logic to handle numeric settings directly without string parsing.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Frontend Refactoring and Type Safety' (Protocol in workflow.md)
 
-## Phase 2: Logic and Backend Improvements
+## Phase 2: Logic and Backend Improvements [checkpoint: 493c2c8]
 - [x] Task: Hijri Month Localization and Time Parsing
     - [x] Refactor `PrayerManager.svelte.ts` to move Hijri month names to a config or utility.
     - [x] Implement robust time parsing in `PrayerManager.svelte.ts` to handle various formats.
@@ -23,11 +23,11 @@
 - [x] Task: Backend Cleanup and CSP Review
     - [x] Investigate and potentially remove redundant `navigate_to_main` event in `src-tauri/src/lib.rs`.
     - [x] Review and verify the `media-src` CSP in `tauri.conf.json`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Logic and Backend Improvements' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Logic and Backend Improvements' (Protocol in workflow.md)
 
 ## Phase 3: Final Quality Assurance
-- [ ] Task: Final Quality Verification
-    - [ ] Run `pnpm check` and ensure zero errors.
-    - [ ] Run all tests and verify >60% coverage for modified modules.
-    - [ ] Run `cd src-tauri && cargo clippy` to ensure backend quality.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Quality Assurance' (Protocol in workflow.md)
+- [x] Task: Final Quality Verification
+    - [x] Run `pnpm check` and ensure zero errors.
+    - [x] Run all tests and verify >60% coverage for modified modules.
+    - [x] Run `cd src-tauri && cargo clippy` to ensure backend quality.
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Final Quality Assurance' (Protocol in workflow.md)
