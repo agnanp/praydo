@@ -28,3 +28,7 @@
 ## 6. Testing
 
 - **Vitest:** A Vite-native unit testing framework for validating application logic.
+
+## 7. Formatting
+
+- **Prettier:** An opinionated code formatter used for maintaining a consistent style across the frontend codebase.
