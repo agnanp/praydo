@@ -42,7 +42,7 @@ export class PrayerManager {
   getMonthSchedule(
     year: number,
     month: number
-  ): Array<{ day: number; prayers: PrayerTimes }> {
+  ): Array<{ day: number; prayers: PrayerTimes; hijriDate: string }> {
     const schedule = [];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const pt = this.createPrayTimeInstance();
@@ -50,7 +50,13 @@ export class PrayerManager {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const times = pt.getTimes(date) as unknown as PrayerTimes;
-      schedule.push({ day, prayers: times });
+      const hijriDateRaw = gregorianToHijri({
+        year,
+        month: month + 1,
+        day,
+      });
+      const hijriDate = formatHijriDate(hijriDateRaw);
+      schedule.push({ day, prayers: times, hijriDate });
     }
     return schedule;
   }

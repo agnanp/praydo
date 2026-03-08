@@ -11,7 +11,9 @@
 
   let currentYear = $state(now.getFullYear());
   let currentMonth = $state(now.getMonth());
-  let schedule = $state<{ day: number; prayers: PrayerTimes }[]>([]);
+  let schedule = $state<
+    { day: number; prayers: PrayerTimes; hijriDate: string }[]
+  >([]);
 
   // Month names
   const monthNames = [
@@ -159,15 +161,26 @@
                   : 'text-surface-900 dark:text-surface-200'}"
               >
                 {#if col.key === 'date'}
-                  <span
-                    class="inline-block w-8 h-8 leading-8 rounded-full {isToday(
-                      row.day
-                    )
-                      ? 'bg-primary-500 text-white'
-                      : ''}"
-                  >
-                    {row.day}
-                  </span>
+                  <div class="flex flex-col items-center justify-center gap-1">
+                    <span
+                      class="inline-block w-8 h-8 leading-8 rounded-full {isToday(
+                        row.day
+                      )
+                        ? 'bg-primary-500 text-white'
+                        : ''}"
+                    >
+                      {row.day}
+                    </span>
+                    <span
+                      class="text-[11px] font-sans font-medium leading-none {isToday(
+                        row.day
+                      )
+                        ? 'text-primary-700 dark:text-primary-300'
+                        : 'text-surface-600 dark:text-surface-400 opacity-80'}"
+                    >
+                      {row.hijriDate.split(',')[0]}
+                    </span>
+                  </div>
                 {:else}
                   {row.prayers[col.key]}
                 {/if}
