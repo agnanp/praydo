@@ -15,6 +15,7 @@ import { formattedLocation } from '$lib/utils/stringUtils';
 import { calculateQiblaBearing } from '$lib/utils/qibla';
 import { formatHijriDate } from '$lib/utils/islamic';
 import { parseTimeString } from '$lib/utils/time';
+import { t, languageSettings } from '$lib/i18n';
 import type { PrayerName, PrayerTimes } from './types';
 
 export class PrayerManager {
@@ -107,7 +108,10 @@ export class PrayerManager {
       month: 'long',
       day: 'numeric',
     };
-    return this.currentTime.toLocaleDateString('en-US', options);
+    return this.currentTime.toLocaleDateString(
+      languageSettings.state.lang,
+      options
+    );
   });
 
   islamicDate = $derived.by(() => {
@@ -270,8 +274,14 @@ export class PrayerManager {
   private async sendNMinutesNotification(name: string, time: string) {
     if (await this.ensurePermission()) {
       invoke('send_native_notification', {
-        title: `${timeRemaining.state.minutes} Minutes Until ${name} Time`,
-        body: `${name} Time: ${time}.`,
+        title: t('notifications.reminder_title', {
+          minutes: timeRemaining.state.minutes,
+          name: t('prayers.' + name.toLowerCase()),
+        }),
+        body: t('notifications.reminder_body', {
+          name: t('prayers.' + name.toLowerCase()),
+          time,
+        }),
       });
     }
     playSound('solemn.mp3');
@@ -280,8 +290,14 @@ export class PrayerManager {
   private async sendPrayerNotification(name: string, time: string) {
     if (await this.ensurePermission()) {
       invoke('send_native_notification', {
-        title: `${name} Time ${time}`,
-        body: `${name} time in ${this.currentLocationLabel}.`,
+        title: t('notifications.exact_title', {
+          name: t('prayers.' + name.toLowerCase()),
+          time,
+        }),
+        body: t('notifications.exact_body', {
+          name: t('prayers.' + name.toLowerCase()),
+          location: this.currentLocationLabel,
+        }),
       });
     }
 
