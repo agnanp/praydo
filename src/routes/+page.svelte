@@ -14,6 +14,7 @@
   import { modeLightSwitch } from '$lib/store/modeLightSwitch';
   import type { PrayerManager } from '$lib/logic/PrayerManager.svelte';
   import QiblaCompass from '$lib/components/QiblaCompass.svelte';
+  import { t } from '$lib/i18n';
 
   const manager = getContext('prayerManager') as PrayerManager;
 
@@ -54,7 +55,7 @@
         <div class="h-full flex flex-col justify-between">
           <div class="flex justify-between items-start">
             <span class="badge preset-filled-tertiary-50-950">
-              Next Prayer
+              {t('common.next_prayer')}
             </span>
           </div>
 
@@ -73,7 +74,8 @@
               <p
                 class="text-secondary-300 text-sm font-medium tracking-widest uppercase"
               >
-                Remaining until {manager.nextPrayer?.name}
+                {t('common.remaining_until')}
+                {t('prayers.' + manager.nextPrayer?.name.toLowerCase())}
               </p>
             {/if}
           </div>
@@ -83,7 +85,7 @@
               {@const PrayerIcon = getPrayerIcon(manager.nextPrayer.name)}
               <div>
                 <h2 class="text-3xl font-bold text-tertiary-50">
-                  {manager.nextPrayer.name}
+                  {t('prayers.' + manager.nextPrayer.name.toLowerCase())}
                 </h2>
                 <p class="text-secondary-300 font-mono">
                   {manager.nextPrayer.time}
@@ -114,7 +116,7 @@
             <p
               class="text-primary-500 text-xs font-bold uppercase tracking-wider mb-1"
             >
-              Today
+              {t('common.today')}
             </p>
             <p class="text-tertiary-50 text-lg font-bold leading-tight">
               {manager.formattedDate}
@@ -135,7 +137,7 @@
               <p
                 class="text-primary-500 text-[10px] font-bold uppercase tracking-wider"
               >
-                Location
+                {t('common.location')}
               </p>
             </div>
 
@@ -186,7 +188,7 @@
                   ? 'opacity-100 text-tertiary-50'
                   : 'opacity-70'}"
               >
-                {prayer.name}
+                {t('prayers.' + prayer.name.toLowerCase())}
               </span>
               <span
                 class="text-lg font-mono {isNext
