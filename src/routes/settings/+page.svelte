@@ -31,14 +31,15 @@
   } from '$lib/store/calculationSettings';
   import { goto } from '$app/navigation';
   import Lightswitch from '$lib/components/Lightswitch.svelte';
+  import { t, languageSettings, dictionaries } from '$lib/i18n';
 
   const options = [
-    { value: 5, label: '5 Minutes' },
-    { value: 10, label: '10 Minutes' },
-    { value: 15, label: '15 Minutes' },
-    { value: 20, label: '20 Minutes' },
-    { value: 25, label: '25 Minutes' },
-    { value: 30, label: '30 Minutes' },
+    { value: 5, label: `5 ${t('common.minutes')}` },
+    { value: 10, label: `10 ${t('common.minutes')}` },
+    { value: 15, label: `15 ${t('common.minutes')}` },
+    { value: 20, label: `20 ${t('common.minutes')}` },
+    { value: 25, label: `25 ${t('common.minutes')}` },
+    { value: 30, label: `30 ${t('common.minutes')}` },
   ];
 
   let autostartEnabled = $state(false);
@@ -57,10 +58,10 @@
   let lastRequestTime = $state(0);
 
   let maghribPlaceholder = $derived(
-    `Enter the ${calculationSettings.state.maghribMode === 'degrees' ? 'degrees value' : 'value of minutes after sunset'}`
+    `${t('settings.calculation.maghrib')} (${calculationSettings.state.maghribMode === 'degrees' ? t('settings.calculation.degrees') : t('settings.calculation.minutes')})`
   );
   let ishaPlaceholder = $derived(
-    `Enter the ${calculationSettings.state.ishaMode === 'degrees' ? 'degrees value' : 'value of minutes after maghrib'}`
+    `${t('settings.calculation.isha')} (${calculationSettings.state.ishaMode === 'degrees' ? t('settings.calculation.degrees') : t('settings.calculation.minutes')})`
   );
 
   function debounceSearch(query: string) {
@@ -106,12 +107,18 @@
       } else {
         // Only show error if query is substantial
         if (query.length > 2) {
-          toaster.error({ title: 'No locations found' });
+          toaster.error({
+            title: t('common.error'),
+            description: 'No locations found',
+          });
         }
       }
     } catch (error) {
       console.error('Error fetching location:', error);
-      toaster.error({ title: 'Error fetching location' });
+      toaster.error({
+        title: t('common.error'),
+        description: 'Error fetching location',
+      });
     }
   }
 
@@ -123,15 +130,24 @@
     try {
       autostartEnabled = event.checked;
       if (autostartEnabled) {
-        toaster.success({ title: 'Autostart Enabled' });
+        toaster.success({
+          title: t('common.success'),
+          description: 'Autostart Enabled',
+        });
         await enable();
       } else {
-        toaster.warning({ title: 'Autostart Disabled' });
+        toaster.warning({
+          title: t('common.warning'),
+          description: 'Autostart Disabled',
+        });
         await disable();
       }
     } catch (error) {
       autostartEnabled = !autostartEnabled;
-      toaster.error({ title: 'Failed to update autostart setting' });
+      toaster.error({
+        title: t('common.error'),
+        description: 'Failed to update autostart setting',
+      });
     }
   }
 
@@ -180,30 +196,30 @@
       aria-label="Back"
       onclick={() => goto('/')}><ChevronLeft size={24} /></button
     >
-    <h2 class="h2 font-bold">Settings</h2>
+    <h2 class="h2 font-bold">{t('settings.title')}</h2>
   </div>
   <div class="card p-4">
     <Tabs value={group} onValueChange={(e) => (group = e.value)}>
       {#snippet list()}
         <Tabs.Control value="location">
           {#snippet lead()}<MapPin size={20} />{/snippet}
-          Location
+          {t('settings.tabs.location')}
         </Tabs.Control>
         <Tabs.Control value="calculation">
           {#snippet lead()}<Calculator size={20} />{/snippet}
-          Calculation
+          {t('settings.tabs.calculation')}
         </Tabs.Control>
         <Tabs.Control value="prayer">
           {#snippet lead()}<CalendarCheck size={20} />{/snippet}
-          Prayer Times
+          {t('settings.tabs.prayer')}
         </Tabs.Control>
         <Tabs.Control value="alert">
           {#snippet lead()}<BellRing size={20} />{/snippet}
-          Notifications
+          {t('settings.tabs.alert')}
         </Tabs.Control>
         <Tabs.Control value="general">
           {#snippet lead()}<Settings size={20} />{/snippet}
-          General
+          {t('settings.tabs.general')}
         </Tabs.Control>
       {/snippet}
       {#snippet content()}
@@ -217,28 +233,28 @@
                 <input
                   class="ig-input"
                   type="search"
-                  placeholder="Enter a city or address..."
+                  placeholder={t('settings.location.placeholder')}
                   bind:value={searchQuery}
                 />
                 <button
                   class="ig-btn preset-filled"
-                  onclick={handleLocationSearch}>Submit</button
+                  onclick={handleLocationSearch}>{t('common.submit')}</button
                 >
               </div>
             </label>
             {#if selectedLocation.state.label}
               <div class="mt-4 p-3 bg-surface-500 rounded dark:bg-surface-800">
-                <p class="font-medium">Selected Location:</p>
+                <p class="font-medium">{t('settings.location.selected')}</p>
                 <p>{selectedLocation.state.label}</p>
                 <p class="text-sm text-surface-700 dark:text-surface-600">
-                  Coordinates: {selectedLocation.state.latitude}, {selectedLocation
-                    .state.longitude}
+                  {t('settings.location.coordinates')}: {selectedLocation.state
+                    .latitude}, {selectedLocation.state.longitude}
                 </p>
               </div>
             {/if}
             <!-- OpenStreetMap Attribution -->
             <div class="p-1 rounded text-sm text-surface-800 text-right">
-              <span>Location data provided by</span>
+              <span>{t('settings.location.attribution')}</span>
               <a
                 href="https://www.openstreetmap.org/copyright"
                 target="_blank"
@@ -253,31 +269,41 @@
         <Tabs.Panel value="calculation">
           <form class="w-full space-y-4 px-4">
             <label class="label">
-              <span class="label-text">Calculation Method</span>
+              <span class="label-text">{t('settings.calculation.method')}</span>
               <select
                 bind:value={calculationSettings.state.method}
                 class="select"
               >
                 {#each calculationMethods as method}
-                  <option value={method.value}>{method.label}</option>
+                  <option value={method.value}
+                    >{method.value === 'custom'
+                      ? t('settings.calculation.custom')
+                      : method.label}</option
+                  >
                 {/each}
               </select>
             </label>
             {#if calculationSettings.state.method === 'custom'}
               <label class="label">
-                <span class="label-text">Fajr</span>
+                <span class="label-text"
+                  >{t('settings.calculation.fajr_angle')}</span
+                >
                 <div class="input-group grid-cols-[1fr_auto]">
                   <input
                     type="number"
                     bind:value={calculationSettings.state.fajrAngle}
                     class="ig-input"
-                    placeholder="Enter the value of degrees"
+                    placeholder={t('settings.calculation.fajr_angle')}
                   />
-                  <div class="ig-cell preset-tonal">degrees</div>
+                  <div class="ig-cell preset-tonal">
+                    {t('settings.calculation.degrees')}
+                  </div>
                 </div>
               </label>
               <label class="label">
-                <span class="label-text">Maghrib</span>
+                <span class="label-text"
+                  >{t('settings.calculation.maghrib')}</span
+                >
                 <div class="input-group grid-cols-[1fr_auto]">
                   <input
                     class="ig-input"
@@ -290,13 +316,17 @@
                     class="ig-select preset-tonal-tertiary"
                     bind:value={calculationSettings.state.maghribMode}
                   >
-                    <option value="degrees">degrees</option>
-                    <option value="minutes">minutes</option>
+                    <option value="degrees"
+                      >{t('settings.calculation.degrees')}</option
+                    >
+                    <option value="minutes"
+                      >{t('settings.calculation.minutes')}</option
+                    >
                   </select>
                 </div>
               </label>
               <label class="label">
-                <span class="label-text">Isha</span>
+                <span class="label-text">{t('settings.calculation.isha')}</span>
                 <div class="input-group grid-cols-[1fr_auto]">
                   <input
                     class="ig-input"
@@ -309,13 +339,19 @@
                     class="ig-select preset-tonal-tertiary"
                     bind:value={calculationSettings.state.ishaMode}
                   >
-                    <option value="degrees">degrees</option>
-                    <option value="minutes">minutes</option>
+                    <option value="degrees"
+                      >{t('settings.calculation.degrees')}</option
+                    >
+                    <option value="minutes"
+                      >{t('settings.calculation.minutes')}</option
+                    >
                   </select>
                 </div>
               </label>
               <label class="label">
-                <span class="label-text">Midnight Method</span>
+                <span class="label-text"
+                  >{t('settings.calculation.midnight')}</span
+                >
                 <select
                   bind:value={calculationSettings.state.midnight}
                   class="select"
@@ -327,20 +363,22 @@
               </label>
             {/if}
             <label class="label">
-              <span class="label-text">Dhuhr</span>
+              <span class="label-text">{t('settings.calculation.dhuhr')}</span>
               <div class="input-group grid-cols-[1fr_auto]">
                 <input
                   class="ig-input"
                   type="number"
                   value={calculationSettings.state.dhuhrMinutes}
                   onchange={handleInputDhuhrChange}
-                  placeholder="Enter the value of minutes after mid-day"
+                  placeholder={t('settings.calculation.dhuhr')}
                 />
-                <div class="ig-cell preset-tonal">minutes</div>
+                <div class="ig-cell preset-tonal">
+                  {t('settings.calculation.minutes')}
+                </div>
               </div>
             </label>
             <label class="label">
-              <span class="label-text">Asr</span>
+              <span class="label-text">{t('settings.calculation.asr')}</span>
               <select
                 bind:value={calculationSettings.state.asrMethod}
                 class="select"
@@ -351,7 +389,9 @@
               </select>
             </label>
             <label class="label">
-              <span class="label-text">Higher Latitudes Adjustment</span>
+              <span class="label-text"
+                >{t('settings.calculation.high_lat')}</span
+              >
               <select
                 bind:value={calculationSettings.state.highLatitudes}
                 class="select"
@@ -365,7 +405,7 @@
         </Tabs.Panel>
         <Tabs.Panel value="prayer">
           <div class="px-4">
-            <h6 class="h6 mb-4">Show Prayer Times</h6>
+            <h6 class="h6 mb-4">{t('settings.prayer.show_times')}</h6>
             <div class="grid grid-cols-2 gap-4 mb-8">
               <label class="flex items-center space-x-2">
                 <input
@@ -373,7 +413,7 @@
                   type="checkbox"
                   bind:checked={selectedTimes.state.daily.fajr}
                 />
-                <p>Fajr</p>
+                <p>{t('prayers.fajr')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -381,7 +421,7 @@
                   type="checkbox"
                   bind:checked={selectedTimes.state.daily.sunrise}
                 />
-                <p>Sunrise</p>
+                <p>{t('prayers.sunrise')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -389,7 +429,7 @@
                   type="checkbox"
                   bind:checked={selectedTimes.state.daily.dhuhr}
                 />
-                <p>Dhuhr</p>
+                <p>{t('prayers.dhuhr')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -397,7 +437,7 @@
                   type="checkbox"
                   bind:checked={selectedTimes.state.daily.asr}
                 />
-                <p>Asr</p>
+                <p>{t('prayers.asr')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -405,7 +445,7 @@
                   type="checkbox"
                   bind:checked={selectedTimes.state.daily.maghrib}
                 />
-                <p>Maghrib</p>
+                <p>{t('prayers.maghrib')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -413,10 +453,10 @@
                   type="checkbox"
                   bind:checked={selectedTimes.state.daily.isha}
                 />
-                <p>Isha</p>
+                <p>{t('prayers.isha')}</p>
               </label>
             </div>
-            <h6 class="h6 mb-4">Play Adzan At</h6>
+            <h6 class="h6 mb-4">{t('settings.prayer.play_adzan')}</h6>
             <div class="grid grid-cols-2 gap-4 mb-8">
               <label class="flex items-center space-x-2">
                 <input
@@ -424,7 +464,7 @@
                   type="checkbox"
                   bind:checked={selectedAlert.state.alert.fajr}
                 />
-                <p>Fajr</p>
+                <p>{t('prayers.fajr')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -432,7 +472,7 @@
                   type="checkbox"
                   bind:checked={selectedAlert.state.alert.dhuhr}
                 />
-                <p>Dhuhr</p>
+                <p>{t('prayers.dhuhr')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -440,7 +480,7 @@
                   type="checkbox"
                   bind:checked={selectedAlert.state.alert.asr}
                 />
-                <p>Asr</p>
+                <p>{t('prayers.asr')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -448,7 +488,7 @@
                   type="checkbox"
                   bind:checked={selectedAlert.state.alert.maghrib}
                 />
-                <p>Maghrib</p>
+                <p>{t('prayers.maghrib')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -456,10 +496,10 @@
                   type="checkbox"
                   bind:checked={selectedAlert.state.alert.isha}
                 />
-                <p>Isha</p>
+                <p>{t('prayers.isha')}</p>
               </label>
             </div>
-            <h6 class="h6 mb-4">Time Format</h6>
+            <h6 class="h6 mb-4">{t('settings.prayer.time_format')}</h6>
             <form class="space-y-2">
               <label class="flex items-center space-x-2">
                 <input
@@ -470,7 +510,7 @@
                   bind:group={selectedTimes.state.format}
                   value="12h"
                 />
-                <p>12 Hour</p>
+                <p>{t('settings.prayer.format_12h')}</p>
               </label>
               <label class="flex items-center space-x-2">
                 <input
@@ -480,14 +520,14 @@
                   bind:group={selectedTimes.state.format}
                   value="24h"
                 />
-                <p>24 Hour</p>
+                <p>{t('settings.prayer.format_24h')}</p>
               </label>
             </form>
           </div>
         </Tabs.Panel>
         <Tabs.Panel value="alert">
           <label class="label px-4">
-            <span class="label-text">Notification before prayer time</span>
+            <span class="label-text">{t('settings.alert.reminder')}</span>
             <select bind:value={timeRemaining.state.minutes} class="select">
               {#each options as option}
                 <option value={option.value}>{option.label}</option>
@@ -505,11 +545,18 @@
                 checked={autostartEnabled}
                 onCheckedChange={toggleAutostart}
               />
-              <p>Autostart at system startup</p>
+              <p>{t('settings.general.autostart')}</p>
             </label>
             <label class="flex items-center space-x-2 px-4">
               <Lightswitch />
-              <p>Dark Mode</p>
+              <p>{t('settings.general.dark_mode')}</p>
+            </label>
+            <label class="label px-4">
+              <span class="label-text">{t('settings.general.language')}</span>
+              <select bind:value={languageSettings.state.lang} class="select">
+                <option value="en">English</option>
+                <option value="id">Bahasa Indonesia</option>
+              </select>
             </label>
             <div
               class="flex items-center justify-between px-4 pt-4 border-t border-surface-900/20"
@@ -517,7 +564,7 @@
               <p
                 class="text-sm font-medium text-surface-900 dark:text-surface-300"
               >
-                App Version
+                {t('settings.general.version')}
               </p>
               <p
                 class="text-sm font-mono text-surface-900 dark:text-surface-300"

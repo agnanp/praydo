@@ -14,6 +14,14 @@ const mockLocation = vi.hoisted(() => ({
     longitude: 106.8456,
     label: 'Jakarta',
     id: 'jakarta-1',
+    hydrated: true,
+  },
+}));
+
+const mockOnboarding = vi.hoisted(() => ({
+  state: {
+    completed: false,
+    hydrated: true,
   },
 }));
 
@@ -61,6 +69,9 @@ vi.mock('$lib/store/selectedAlert', () => ({
       },
     },
   },
+}));
+vi.mock('$lib/store/onboarding', () => ({
+  onboardingState: mockOnboarding,
 }));
 vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),
@@ -177,6 +188,22 @@ describe('PrayerManager', () => {
         title: expect.stringContaining(prayer.name),
       })
     );
+  });
+
+  it('should reflect hydration status from store', () => {
+    expect(manager.isHydrated).toBe(true);
+
+    // When hydrated is false
+    mockLocation.state.hydrated = false;
+    let manager2 = new PrayerManager();
+    expect(manager2.isHydrated).toBe(false);
+    manager2.destroy();
+
+    // Reset
+    mockLocation.state.hydrated = true;
+    manager2 = new PrayerManager();
+    expect(manager2.isHydrated).toBe(true);
+    manager2.destroy();
   });
 
   it('should detect when setup is required (empty location)', () => {

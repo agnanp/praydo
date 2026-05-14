@@ -47,4 +47,13 @@ describe('OnboardingManager', () => {
     expect(manager.isFirstStep).toBe(false);
     expect(manager.isLastStep).toBe(true);
   });
+
+  it('should start as not complete', () => {
+    expect(manager.isComplete).toBe(false);
+  });
+
+  it('should set isComplete and onboarding store when complete() is called', () => {
+    manager.complete();
+    expect(manager.isComplete).toBe(true);
+  });
 });

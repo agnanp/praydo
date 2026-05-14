@@ -5,31 +5,22 @@
   import type { PrayerManager } from '$lib/logic/PrayerManager.svelte';
   import { selectedTimes } from '$lib/store/selectedTimes';
   import type { PrayerTimes } from '$lib/logic/types';
+  import { t } from '$lib/i18n';
 
   const manager = getContext('prayerManager') as PrayerManager;
   const now = new Date();
 
   let currentYear = $state(now.getFullYear());
   let currentMonth = $state(now.getMonth());
-  let schedule = $state<{ day: number; prayers: PrayerTimes }[]>([]);
+  let schedule = $state<
+    { day: number; prayers: PrayerTimes; hijriDate: string }[]
+  >([]);
 
-  // Month names
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  let currentMonthName = $derived(monthNames[currentMonth]);
+  // Month names using Intl for easy localization
+  let currentMonthName = $derived.by(() => {
+    const date = new Date(currentYear, currentMonth);
+    return date.toLocaleString(undefined, { month: 'long' });
+  });
 
   // Fetch schedule when month/year changes
   $effect(() => {
@@ -64,21 +55,37 @@
 
   // Columns to display (based on user settings + Date)
   const columns = [
-    { key: 'date', label: 'Date' },
-    { key: 'fajr', label: 'Fajr', enabled: selectedTimes.state.daily.fajr },
+    { key: 'date', label: t('calendar.date') },
+    {
+      key: 'fajr',
+      label: t('prayers.fajr'),
+      enabled: selectedTimes.state.daily.fajr,
+    },
     {
       key: 'sunrise',
-      label: 'Sunrise',
+      label: t('prayers.sunrise'),
       enabled: selectedTimes.state.daily.sunrise,
     },
-    { key: 'dhuhr', label: 'Dhuhr', enabled: selectedTimes.state.daily.dhuhr },
-    { key: 'asr', label: 'Asr', enabled: selectedTimes.state.daily.asr },
+    {
+      key: 'dhuhr',
+      label: t('prayers.dhuhr'),
+      enabled: selectedTimes.state.daily.dhuhr,
+    },
+    {
+      key: 'asr',
+      label: t('prayers.asr'),
+      enabled: selectedTimes.state.daily.asr,
+    },
     {
       key: 'maghrib',
-      label: 'Maghrib',
+      label: t('prayers.maghrib'),
       enabled: selectedTimes.state.daily.maghrib,
     },
-    { key: 'isha', label: 'Isha', enabled: selectedTimes.state.daily.isha },
+    {
+      key: 'isha',
+      label: t('prayers.isha'),
+      enabled: selectedTimes.state.daily.isha,
+    },
   ].filter((c) => c.key === 'date' || c.enabled);
 
   onMount(() => {
@@ -100,7 +107,7 @@
         <ChevronLeft size={24} />
       </button>
       <h2 class="h2 font-bold text-surface-900 dark:text-surface-50">
-        Prayer Calendar
+        {t('calendar.title')}
       </h2>
     </div>
 
@@ -159,15 +166,26 @@
                   : 'text-surface-900 dark:text-surface-200'}"
               >
                 {#if col.key === 'date'}
-                  <span
-                    class="inline-block w-8 h-8 leading-8 rounded-full {isToday(
-                      row.day
-                    )
-                      ? 'bg-primary-500 text-white'
-                      : ''}"
-                  >
-                    {row.day}
-                  </span>
+                  <div class="flex flex-col items-center justify-center gap-1">
+                    <span
+                      class="inline-block w-8 h-8 leading-8 rounded-full {isToday(
+                        row.day
+                      )
+                        ? 'bg-primary-500 text-white'
+                        : ''}"
+                    >
+                      {row.day}
+                    </span>
+                    <span
+                      class="text-[11px] font-sans font-medium leading-none {isToday(
+                        row.day
+                      )
+                        ? 'text-primary-700 dark:text-primary-300'
+                        : 'text-surface-600 dark:text-surface-400 opacity-80'}"
+                    >
+                      {row.hijriDate.split(',')[0]}
+                    </span>
+                  </div>
                 {:else}
                   {row.prayers[col.key]}
                 {/if}

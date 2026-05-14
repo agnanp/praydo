@@ -10,11 +10,13 @@ import {
   requestPermission,
 } from '@tauri-apps/plugin-notification';
 import { playSound } from '$lib/sound';
+import { onboardingState } from '$lib/store/onboarding';
 import { gregorianToHijri } from '@tabby_ai/hijri-converter';
 import { formattedLocation } from '$lib/utils/stringUtils';
 import { calculateQiblaBearing } from '$lib/utils/qibla';
 import { formatHijriDate } from '$lib/utils/islamic';
 import { parseTimeString } from '$lib/utils/time';
+import { t, languageSettings } from '$lib/i18n';
 import type { PrayerName, PrayerTimes } from './types';
 
 export class PrayerManager {
@@ -42,7 +44,7 @@ export class PrayerManager {
   getMonthSchedule(
     year: number,
     month: number
-  ): Array<{ day: number; prayers: PrayerTimes }> {
+  ): Array<{ day: number; prayers: PrayerTimes; hijriDate: string }> {
     const schedule = [];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const pt = this.createPrayTimeInstance();
@@ -50,7 +52,13 @@ export class PrayerManager {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const times = pt.getTimes(date) as unknown as PrayerTimes;
-      schedule.push({ day, prayers: times });
+      const hijriDateRaw = gregorianToHijri({
+        year,
+        month: month + 1,
+        day,
+      });
+      const hijriDate = formatHijriDate(hijriDateRaw);
+      schedule.push({ day, prayers: times, hijriDate });
     }
     return schedule;
   }
@@ -101,7 +109,10 @@ export class PrayerManager {
       month: 'long',
       day: 'numeric',
     };
-    return this.currentTime.toLocaleDateString('en-US', options);
+    return this.currentTime.toLocaleDateString(
+      languageSettings.state.lang,
+      options
+    );
   });
 
   islamicDate = $derived.by(() => {
@@ -113,6 +124,11 @@ export class PrayerManager {
 
     return formatHijriDate(hijriDate);
   });
+
+  /** True once all persisted stores have loaded from disk. */
+  isHydrated = $derived(
+    selectedLocation.state.hydrated && onboardingState.state.hydrated
+  );
 
   isSetupRequired = $derived.by(() => {
     return !selectedLocation.state.label || !selectedLocation.state.id;
@@ -264,8 +280,14 @@ export class PrayerManager {
   private async sendNMinutesNotification(name: string, time: string) {
     if (await this.ensurePermission()) {
       invoke('send_native_notification', {
-        title: `${timeRemaining.state.minutes} Minutes Until ${name} Time`,
-        body: `${name} Time: ${time}.`,
+        title: t('notifications.reminder_title', {
+          minutes: timeRemaining.state.minutes,
+          name: t('prayers.' + name.toLowerCase()),
+        }),
+        body: t('notifications.reminder_body', {
+          name: t('prayers.' + name.toLowerCase()),
+          time,
+        }),
       });
     }
     playSound('solemn.mp3');
@@ -274,8 +296,14 @@ export class PrayerManager {
   private async sendPrayerNotification(name: string, time: string) {
     if (await this.ensurePermission()) {
       invoke('send_native_notification', {
-        title: `${name} Time ${time}`,
-        body: `${name} time in ${this.currentLocationLabel}.`,
+        title: t('notifications.exact_title', {
+          name: t('prayers.' + name.toLowerCase()),
+          time,
+        }),
+        body: t('notifications.exact_body', {
+          name: t('prayers.' + name.toLowerCase()),
+          location: this.currentLocationLabel,
+        }),
       });
     }
 
