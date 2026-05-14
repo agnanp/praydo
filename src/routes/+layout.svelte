@@ -18,7 +18,9 @@
   });
 </script>
 
-{#if prayerManager.isSetupRequired}
+{#if !prayerManager.isHydrated}
+  <!-- stores still loading from disk, render nothing -->
+{:else if prayerManager.isSetupRequired}
   <OnboardingWizard manager={onboardingManager} />
 {:else}
   {@render children()}

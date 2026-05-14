@@ -124,6 +124,9 @@ export class PrayerManager {
     return formatHijriDate(hijriDate);
   });
 
+  /** True once the persisted stores have loaded from disk. */
+  isHydrated = $derived(selectedLocation.state.hydrated);
+
   isSetupRequired = $derived.by(() => {
     return !selectedLocation.state.label || !selectedLocation.state.id;
   });
