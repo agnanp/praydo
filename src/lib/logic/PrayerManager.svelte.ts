@@ -10,6 +10,7 @@ import {
   requestPermission,
 } from '@tauri-apps/plugin-notification';
 import { playSound } from '$lib/sound';
+import { onboardingState } from '$lib/store/onboarding';
 import { gregorianToHijri } from '@tabby_ai/hijri-converter';
 import { formattedLocation } from '$lib/utils/stringUtils';
 import { calculateQiblaBearing } from '$lib/utils/qibla';
@@ -124,8 +125,10 @@ export class PrayerManager {
     return formatHijriDate(hijriDate);
   });
 
-  /** True once the persisted stores have loaded from disk. */
-  isHydrated = $derived(selectedLocation.state.hydrated);
+  /** True once all persisted stores have loaded from disk. */
+  isHydrated = $derived(
+    selectedLocation.state.hydrated && onboardingState.state.hydrated
+  );
 
   isSetupRequired = $derived.by(() => {
     return !selectedLocation.state.label || !selectedLocation.state.id;

@@ -84,9 +84,9 @@
       </p>
     </header>
 
-    <div class="min-h-[320px]">
+    <div class="relative min-h-[320px] overflow-hidden">
       {#if manager.currentStep === 0}
-        <div transition:fade>
+        <div class="absolute inset-0" transition:fade>
           <h3 class="h3 mb-2 flex items-center gap-2">
             <MapPin size={24} />
             {t('onboarding.step1')}
@@ -140,7 +140,7 @@
           </div>
         </div>
       {:else if manager.currentStep === 1}
-        <div transition:fade>
+        <div class="absolute inset-0" transition:fade>
           <h3 class="h3 mb-2 flex items-center gap-2">
             <Calculator size={24} />
             {t('onboarding.step2')}
@@ -166,7 +166,7 @@
           </div>
         </div>
       {:else if manager.currentStep === 2}
-        <div transition:fade>
+        <div class="absolute inset-0" transition:fade>
           <h3 class="h3 mb-2 flex items-center gap-2">
             <BellRing size={24} />
             {t('onboarding.step3')}
@@ -244,10 +244,7 @@
           <button
             class="btn preset-filled-primary"
             disabled={!selectedLocation.state.label}
-            onclick={() => {
-              // The isSetupRequired derived state in PrayerManager will automatically update
-              // because selectedLocation.state is now populated.
-            }}
+            onclick={() => manager.complete()}
           >
             {t('common.finish')}
           </button>

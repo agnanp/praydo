@@ -18,6 +18,13 @@ const mockLocation = vi.hoisted(() => ({
   },
 }));
 
+const mockOnboarding = vi.hoisted(() => ({
+  state: {
+    completed: false,
+    hydrated: true,
+  },
+}));
+
 vi.mock('$lib/store/selectedLocation', () => ({
   selectedLocation: mockLocation,
 }));
@@ -62,6 +69,9 @@ vi.mock('$lib/store/selectedAlert', () => ({
       },
     },
   },
+}));
+vi.mock('$lib/store/onboarding', () => ({
+  onboardingState: mockOnboarding,
 }));
 vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),

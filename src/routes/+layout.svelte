@@ -3,6 +3,7 @@
   import { PrayerManager } from '$lib/logic/PrayerManager.svelte';
   import { OnboardingManager } from '$lib/logic/OnboardingManager.svelte';
   import OnboardingWizard from '$lib/components/OnboardingWizard.svelte';
+  import { onboardingState } from '$lib/store/onboarding';
   import '../app.css';
 
   const prayerManager = new PrayerManager();
@@ -20,7 +21,7 @@
 
 {#if !prayerManager.isHydrated}
   <!-- stores still loading from disk, render nothing -->
-{:else if prayerManager.isSetupRequired}
+{:else if !onboardingState.state.completed}
   <OnboardingWizard manager={onboardingManager} />
 {:else}
   {@render children()}
